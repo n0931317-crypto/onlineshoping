@@ -19,16 +19,32 @@ const ADMIN_CREDENTIALS = {
 
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async function() {
-    // Always clear login on page load - require fresh login
-    localStorage.removeItem('adminLoggedIn');
-    
-    // Show login page
     const loginPage = document.getElementById('login-page');
     const adminPanel = document.getElementById('admin-panel');
-    if (loginPage) loginPage.style.display = 'flex';
-    if (adminPanel) adminPanel.style.display = 'none';
     
-    setupLoginEventListener();
+    // Check if admin is already logged in
+    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+    const email = localStorage.getItem('adminEmail') || 'Admin';
+    
+    if (isLoggedIn) {
+        // Hide login page and show admin panel
+        if (loginPage) loginPage.style.display = 'none';
+        if (adminPanel) adminPanel.style.display = 'flex';
+        
+        // Set admin username in header
+        const usernameElement = document.getElementById('admin-username');
+        if (usernameElement) {
+            usernameElement.textContent = email.split('@')[0] || 'Admin';
+        }
+        
+        // Initialize admin panel
+        initializeAdminPanel();
+    } else {
+        // Show login page
+        if (loginPage) loginPage.style.display = 'flex';
+        if (adminPanel) adminPanel.style.display = 'none';
+        setupLoginEventListener();
+    }
 });
 
 // Setup Login Form Event Listener
@@ -96,6 +112,7 @@ function handleLogout(event) {
     if (confirm('Are you sure you want to logout?')) {
         // Clear login status
         localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminEmail');
         
         // Hide admin panel and show login page
         const loginPage = document.getElementById('login-page');
