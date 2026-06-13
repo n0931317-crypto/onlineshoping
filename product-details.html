@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Nepo Online stores</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="product-modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .details-container {
+            max-width: 1200px;
+            margin: 80px auto 60px;
+            padding: 0 20px;
+        }
+
+        .details-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .details-images {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .details-main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f5f5f5;
+        }
+
+        .details-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .details-thumbnail {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .details-thumbnail:hover {
+            border-color: #ff6b8b;
+            transform: scale(1.05);
+        }
+
+        .details-thumbnail.active {
+            border-color: #ff6b8b;
+        }
+
+        .details-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .details-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .details-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .details-rating .stars {
+            color: #ffd700;
+        }
+
+        .details-rating .count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .details-price {
+            font-size: 1.8rem;
+            color: #ff6b8b;
+            font-weight: 700;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .details-original-price {
+            font-size: 1.3rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .details-discount {
+            background: #ff6b8b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .details-stock {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left: 4px solid #28a745;
+            border-radius: 8px;
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .details-stock.unavailable {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+
+        .details-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .details-features {
+            border-top: 2px solid #eee;
+            border-bottom: 2px solid #eee;
+            padding: 20px 0;
+        }
+
+        .details-features h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .details-features ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .details-features li {
+            padding: 8px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .details-features li:before {
+            content: "✓";
+            color: #ff6b8b;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .details-specifications {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .details-specifications h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: #ff6b8b;
+        }
+
+        .spec-value {
+            color: #555;
+        }
+
+        .details-quantity {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .details-quantity label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .quantity-controls button {
+            background: #f5f5f5;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-controls button:hover {
+            background: #ff6b8b;
+            color: white;
+        }
+
+        .quantity-controls input {
+            border: none;
+            width: 50px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .details-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .details-actions button {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add-cart {
+            background: linear-gradient(135deg, #ff6b8b, #ff4757);
+            color: white;
+        }
+
+        .btn-add-cart:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 139, 0.4);
+        }
+
+        .btn-wishlist {
+            background: white;
+            border: 2px solid #ff6b8b;
+            color: #ff6b8b;
+        }
+
+        .btn-wishlist:hover {
+            background: rgba(255, 107, 139, 0.1);
+        }
+
+        .details-tabs {
+            margin-top: 40px;
+            border-top: 2px solid #eee;
+            padding-top: 30px;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            grid-column: 1 / -1;
+        }
+
+        .tab-link {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            padding-bottom: 15px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-link.active {
+            color: #ff6b8b;
+            border-bottom-color: #ff6b8b;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .related-products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .related-product-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .related-product-card:hover {
+            box-shadow: 0 10px 30px rgba(255, 107, 139, 0.2);
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .details-wrapper {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                padding: 20px;
+            }
+
+            .details-main-image {
+                height: 300px;
+            }
+
+            .details-title {
+                font-size: 1.5rem;
+            }
+
+            .details-price {
+                font-size: 1.5rem;
+            }
+
+            .details-thumbnails {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .details-actions {
+                flex-direction: column;
+            }
+
+            .tabs-nav {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .details-container {
+                margin-top: 70px;
+                padding: 10px;
+            }
+
+            .details-wrapper {
+                padding: 15px;
+                gap: 20px;
+            }
+
+            .details-main-image {
+                height: 250px;
+            }
+
+            .details-title {
+                font-size: 1.3rem;
+            }
+
+            .details-price {
+                font-size: 1.3rem;
+            }
+
+            .details-thumbnails {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="uploads/logo.png" alt="Nepo Online stores Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>Nepo Online stores</h1>
+                    <p>& Cosmetic Center</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="orders.html">Order</a></li>
+                    <li><a href="track.html">Track</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="admin.html" class="admin-btn">Admin</a></li>
+                </ul>
+                <div class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="details-container" style="margin-top: 100px; margin-bottom: 0;">
+        <div style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">
+            <a href="index.html" style="color: #ff6b8b; text-decoration: none;">Home</a> / 
+            <a href="index.html#products" style="color: #ff6b8b; text-decoration: none;">Products</a> / 
+            <span id="breadcrumb-name">Product Details</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="details-container">
+        <div class="details-wrapper">
+            <!-- Images Section -->
+            <div class="details-images">
+                <img id="mainImage" src="https://via.placeholder.com/400x400?text=Product+Image" alt="Product Image" class="details-main-image">
+                <div class="details-thumbnails" id="thumbnailsContainer">
+                    <!-- Thumbnails will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="details-info">
+                <div>
+                    <h1 class="details-title" id="productName">Product Name</h1>
+                    <div class="details-rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="count">(124 reviews)</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="details-price">
+                        <span id="productPrice">₹999</span>
+                        <span class="details-original-price">₹1,299</span>
+                        <span class="details-discount">23% OFF</span>
+                    </div>
+                </div>
+
+                <div class="details-stock" id="stockStatus">
+                    <i class="fas fa-check-circle"></i> In Stock (45 units available)
+                </div>
+
+                <div class="details-description" id="productDescription">
+                    Product description will appear here...
+                </div>
+
+                <div class="details-features">
+                    <h3>Key Features</h3>
+                    <ul id="featuresList">
+                        <li>High quality ingredients</li>
+                        <li>Dermatologist tested</li>
+                        <li>Safe for all skin types</li>
+                        <li>Fast delivery</li>
+                    </ul>
+                </div>
+
+                <div class="details-specifications">
+                    <h3>Specifications</h3>
+                    <div id="specsList">
+                        <!-- Specs will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="details-quantity">
+                    <label for="quantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button onclick="decreaseQuantity()">−</button>
+                        <input type="number" id="quantity" value="1" min="1" max="100" readonly>
+                        <button onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <div class="details-actions">
+                    <button class="btn-add-cart" onclick="addToCart()">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="btn-wishlist" onclick="addToWishlist()">
+                        <i class="fas fa-heart"></i> Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="details-tabs">
+            <div class="tabs-nav">
+                <button class="tab-link active" onclick="switchTab('description')">Description</button>
+                <button class="tab-link" onclick="switchTab('reviews')">Reviews</button>
+                <button class="tab-link" onclick="switchTab('related')">Related Products</button>
+            </div>
+
+            <div id="description" class="tab-content active">
+                <h3 style="color: #333; margin-bottom: 15px;">Product Description</h3>
+                <p id="fullDescription" style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+                    Detailed product description will be displayed here...
+                </p>
+                <h4 style="color: #333; margin-top: 30px; margin-bottom: 15px;">How to Use</h4>
+                <ol style="color: #555; line-height: 1.8; margin-left: 20px;">
+                    <li>Follow the instructions provided</li>
+                    <li>Use the recommended quantity</li>
+                    <li>Apply as directed</li>
+                </ol>
+            </div>
+
+            <div id="reviews" class="tab-content">
+                <h3 style="color: #333; margin-bottom: 20px;">Customer Reviews</h3>
+                <div style="background: #f9f9f9; padding: 40px; text-align: center; border-radius: 8px;">
+                    <p style="color: #999;">No reviews yet. Be the first to review this product!</p>
+                </div>
+            </div>
+
+            <div id="related" class="tab-content">
+                <h3 style="color: #333; margin-bottom: 20px;">Related Products</h3>
+                <div class="related-products" id="relatedProductsContainer">
+                    <p style="color: #999;">Loading related products...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 80px;">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nepo Online stores</h3>
+                    <p>& Cosmetic Center</p>
+                    <p>Your beauty is our priority</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#products">Products</a></li>
+                        <li><a href="shipping.html">Shipping Policy</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p><i class="fas fa-phone"></i> 033590207</p>
+                    <p><i class="fas fa-envelope"></i> nepoonline0@gmail.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Khaireni, Gulmi</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 Nepo Online stores. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="supabase-new.js"></script>
+    <script>
+        // Mobile menu
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-menu ul').classList.toggle('show');
+        });
+
+        // Tab switching
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const links = document.querySelectorAll('.tab-link');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            links.forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Quantity controls
+        function increaseQuantity() {
+            const input = document.getElementById('quantity');
+            input.value = Math.min(parseInt(input.value) + 1, 100);
+        }
+
+        function decreaseQuantity() {
+            const input = document.getElementById('quantity');
+            input.value = Math.max(parseInt(input.value) - 1, 1);
+        }
+
+        // Add to cart
+        function addToCart() {
+            const qty = document.getElementById('quantity').value;
+            const productName = document.getElementById('productName').textContent;
+            const priceText = document.getElementById('productPrice').textContent;
+            const price = parseFloat(priceText.replace('₹', '').replace(',', ''));
+            
+            // Create proper order data structure
+            const orderData = {
+                order_number: 'ORD-' + Date.now(),
+                customer_name: 'Customer',
+                customer_phone: '',
+                customer_email: '',
+                delivery_address: '',
+                delivery_date: '',
+                delivery_charge: 50,
+                items: [{
+                    product_id: new Date().getTime(),
+                    product_name: productName,
+                    price: price,
+                    quantity: parseInt(qty)
+                }],
+                total_amount: (price * parseInt(qty)) + 50,
+                payment_method: '',
+                order_status: 'pending',
+                created_at: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('orderData', JSON.stringify(orderData));
+            
+            alert('✅ Added to cart!');
+            
+            // Redirect to payment page
+            setTimeout(() => {
+                window.location.href = 'payment.html';
+            }, 500);
+        }
+
+        // Add to wishlist
+        function addToWishlist() {
+            const productName = document.getElementById('productName').textContent;
+            alert('❤️ Added ' + productName + ' to wishlist!');
+        }
+
+        // Load product details from URL parameter
+        window.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            
+            if (!productId) {
+                document.body.innerHTML = '<div style="padding: 100px; text-align: center;"><h2>Product not found</h2><a href="index.html#products">Back to Products</a></div>';
+                return;
+            }
+
+            // Simulate loading product details
+            // In real app, fetch from Supabase
+            const demoProduct = {
+                id: productId,
+                name: 'Premium Beauty Serum',
+                price: '₹899',
+                originalPrice: '₹1,299',
+                description: 'Our premium beauty serum is formulated with natural ingredients to provide deep nourishment and hydration to your skin.',
+                stock: 45,
+                rating: 4.5,
+                reviews: 124
+            };
+
+            document.getElementById('productName').textContent = demoProduct.name;
+            document.getElementById('productPrice').textContent = demoProduct.price;
+            document.getElementById('breadcrumb-name').textContent = demoProduct.name;
+            document.getElementById('productDescription').textContent = demoProduct.description;
+            document.getElementById('fullDescription').textContent = demoProduct.description;
+        });
+    </script>
+</body>
+</html>

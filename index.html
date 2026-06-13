@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepo Online Stores - Premium Fashion & Fabric Dresses</title>
+    <link rel="icon" type="image/png" href="uploads/logo.png">
+    <link rel="stylesheet" href="modern-premium-styles.css">
+    <link rel="stylesheet" href="product-modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Exclusive Offer Banner -->
+    <div id="offerBanner" class="offer-banner">
+        <div class="offer-content">
+            <div class="offer-text">
+                <h3 id="offerTitle">Exclusive Offer!</h3>
+                <p id="offerDesc">Limited Time Only</p>
+            </div>
+            <div class="offer-countdown" id="offerCountdown">Loading...</div>
+            <button class="offer-close" onclick="closeOfferBanner()" title="Close">&times;</button>
+        </div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container main-header-container">
+            <div class="mobile-menu-btn" title="Toggle Menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo modern-logo">
+                <img src="uploads/logo.png" alt="Website Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>Nepo Online stores</h1>
+                    <p>Premium Fabrics & Fashion</p>
+                </div>
+            </div>
+            <nav class="nav-menu modern-nav">
+                <ul>
+                    <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#shop" class="nav-link"><i class="fas fa-th-large"></i> Shop</a></li>
+                    <li><a href="about-us.html" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="#gallery" class="nav-link"><i class="fas fa-images"></i> Gallery</a></li>
+                    <li><a href="#contact" class="nav-link"><i class="fas fa-phone"></i> Contact</a></li>
+                    <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                    <li><a href="track.html"><i class="fas fa-truck"></i> Track</a></li>
+                    <li><a href="admin.html" class="admin-btn"><i class="fas fa-user-shield"></i> Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Header Promo Banner -->
+    <div class="header-promo-banner">
+        <div class="promo-content">
+            <h2><i class="fas fa-star"></i> New Arrivals Available Now!</h2>
+            <p>Explore our latest collection of premium fabrics and fashion items</p>
+            <a href="#shop" class="promo-btn">Shop Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Cart Overlay/Modal -->
+    <div id="cartOverlay" class="cart-overlay hidden">
+        <div class="cart-overlay-content">
+            <span class="cart-overlay-close" id="closeCartOverlay">&times;</span>
+            <h2>Your Cart</h2>
+            <div id="cartOverlayItems" class="cart-overlay-items">
+                <!-- Cart items will be dynamically inserted here -->
+            </div>
+            <div class="cart-overlay-footer">
+                <button id="goToCheckout" class="btn btn-checkout-primary">
+                    <i class="fas fa-shopping-bag"></i> Proceed to Checkout
+                </button>
+                <button id="clearCart" class="btn btn-checkout-secondary">
+                    <i class="fas fa-trash"></i> Clear Cart
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Drawer for Mobile -->
+    <nav class="bottom-nav-drawer">
+        <a href="index.html" class="active"><i class="fas fa-home"></i><span>Home</span></a>
+        <a href="#shop"><i class="fas fa-th-large"></i><span>Shop</span></a>
+        <a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+        <a href="track.html"><i class="fas fa-truck"></i><span>Track</span></a>
+        <a href="https://wa.me/9779823145063" target="_blank"><i class="fas fa-whatsapp"></i><span>Chat</span></a>
+    </nav>
+        <style>
+        .main-header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .modern-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-promo-banner {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            animation: slideDown 0.6s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .promo-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .promo-content h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 700;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .promo-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.95;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .promo-btn {
+            background: rgba(255, 215, 0, 0.9);
+            color: #333;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .promo-btn:hover {
+            background: rgba(255, 215, 0, 1);
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .promo-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .promo-content h2 {
+                font-size: 1rem;
+                margin: 0;
+            }
+            
+            .promo-content p {
+                font-size: 0.75rem;
+                display: none;
+            }
+            
+            .promo-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-promo-banner {
+                padding: 12px 10px;
+            }
+            
+            .promo-content {
+                gap: 8px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .promo-content h2 {
+                font-size: 0.9rem;
+                margin: 0;
+                flex: 1;
+                white-space: nowrap;
+            }
+            
+            .promo-content p {
+                display: none;
+            }
+            
+            .promo-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+        }
+        
+        .modern-nav ul {
+            display: flex;
+            gap: 18px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .modern-nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1em;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .modern-nav a.active, .modern-nav a:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+        @media (max-width: 900px) {
+            .main-header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .modern-nav ul {
+                gap: 10px;
+            }
+            .logo-text h1 {
+                font-size: 1.1em;
+            }
+        }
+        /* Bottom Navigation Drawer */
+        .bottom-nav-drawer {
+            display: none;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100vw;
+            background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            z-index: 9999;
+            border-radius: 16px 16px 0 0;
+            border-top: 1px solid #e0e0e0;
+            justify-content: space-around;
+            align-items: center;
+            padding: 6px 0 2px 0;
+        }
+        .bottom-nav-drawer a {
+            flex: 1;
+            text-align: center;
+            color: #1a1a2e;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 4px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .bottom-nav-drawer a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 0;
+            background: linear-gradient(180deg, #e94560 0%, #ff6b8b 100%);
+            transition: height 0.3s ease;
+        }
+        .bottom-nav-drawer a.active::before,
+        .bottom-nav-drawer a:hover::before {
+            height: 3px;
+        }
+        .bottom-nav-drawer a.active, .bottom-nav-drawer a:hover {
+            background: rgba(233, 69, 96, 0.08);
+            color: #e94560;
+            transform: translateY(-2px);
+        }
+        .bottom-nav-drawer i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: transform 0.3s ease;
+        }
+        .bottom-nav-drawer a.active i,
+        .bottom-nav-drawer a:hover i {
+            transform: scale(1.15);
+        }
+        .bottom-nav-drawer span {
+            font-size: 10px;
+            font-weight: 500;
+            display: block;
+            margin-top: 2px;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav-drawer {
+                display: flex;
+            }
+            body {
+                padding-bottom: 60px;
+            }
+        }
+        </style>
+    </header>
+
+    <!-- Hero Section with Dynamic Slider -->
+    <section id="home" class="hero">
+        <div class="hero-slider-wrapper">
+            <div class="hero-slider-slide" id="heroSliderSlide" style="background-image:url('https://via.placeholder.com/1920x350?text=Loading...');">
+                <div class="hero-content centered">
+                    <h2>Discover Premium<br><span class="highlight">Fabrics & Fashion</span></h2>
+                    <p>Explore our exclusive collection of traditional and modern styles</p>
+                    <a href="#shop" class="btn btn-primary">Start Shopping</a>
+                </div>
+                <button class="hero-slider-arrow left" id="heroSliderPrev">&#10094;</button>
+                <button class="hero-slider-arrow right" id="heroSliderNext">&#10095;</button>
+            </div>
+        </div>
+        <style>
+        .hero-slider-wrapper {
+            width: 100vw;
+            min-height: 350px;
+            position: relative;
+            margin: 0 auto 18px auto;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        .hero-slider-slide {
+            width: 100vw;
+            min-height: 350px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            transition: background-image 0.5s;
+        }
+        .hero-content.centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            background: rgba(0,0,0,0.25);
+            padding: 32px 18px;
+            border-radius: 18px;
+            width: 100%;
+            max-width: 700px;
+            box-sizing: border-box;
+        }
+        .hero-slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .hero-slider-arrow.left { left: 10px; }
+        .hero-slider-arrow.right { right: 10px; }
+        .hero-content.centered h2 {
+            font-size: 2.2em;
+            margin-bottom: 0.5em;
+        }
+        .hero-content.centered p {
+            font-size: 1.1em;
+            margin-bottom: 1.2em;
+        }
+        @media (max-width: 600px) {
+            .hero-slider-wrapper, .hero-slider-slide { min-height: 180px; }
+            .hero-content.centered { padding: 16px 4px; }
+            .hero-content.centered h2 { font-size: 1.2em; }
+        }
+        </style>
+    </section>
+
+    <!-- Categories Showcase Section - Sliding Carousel -->
+    <section id="categories-showcase" class="categories-showcase">
+        <div class="container">
+            <h2 class="section-title">Browse Our Categories</h2>
+            <div class="categories-carousel-wrapper">
+                <div id="categoriesCarousel" class="categories-carousel">
+                    <div class="category-loading">Loading categories...</div>
+                </div>
+                <!-- Carousel Navigation Dots -->
+                <div id="carouselDots" class="carousel-dots"></div>
+                <!-- Carousel Controls -->
+                <button class="carousel-control prev" id="prevCategory" title="Previous">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-control next" id="nextCategory" title="Next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shop Section with Modern Filters -->
+    <section id="shop" class="shop">
+        <div class="container">
+            <h2 class="section-title">Our Collections</h2>
+
+            <!-- Search Bar -->
+            <div class="shop-controls">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search products, fabrics, styles...">
+                    <button id="clearSearch" class="clear-btn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="controls-right">
+                    <select id="sortBy" class="sort-dropdown">
+                        <option value="">Sort by</option>
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="newest">Newest</option>
+                    </select>
+                    
+                    <button id="filterToggle" class="filter-btn-toggle">
+                        <i class="fas fa-sliders-h"></i> Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="category-filters">
+                <button class="category-btn active" data-category="all">All Products</button>
+                <button class="category-btn" data-category="fabrics">Fabrics</button>
+                <button class="category-btn" data-category="saree">Sarees</button>
+                <button class="category-btn" data-category="suit">Ladies Suits</button>
+                <button class="category-btn" data-category="lehanga">Lehengas</button>
+                <button class="category-btn" data-category="accessories">Accessories</button>
+            </div>
+
+            <!-- Advanced Filters -->
+            <div id="advancedFilters" class="advanced-filters" style="display: none;">
+                <h4>Filter by Price Range</h4>
+                <div class="price-range">
+                    <div class="price-inputs">
+                        <div class="input-group">
+                            <label>Minimum Price: <span id="minDisplay">₹0</span></label>
+                            <input type="range" id="priceMin" min="0" max="10000" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Maximum Price: <span id="maxDisplay">₹10000</span></label>
+                            <input type="range" id="priceMax" min="0" max="10000" value="10000">
+                        </div>
+                    </div>
+                </div>
+                <button id="resetFilters" class="btn btn-secondary">Reset All Filters</button>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsContainer" class="products-grid">
+                <div class="loading">Loading premium collection...</div>
+            </div>
+            
+            <div id="noResults" class="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <p>No products found matching your criteria</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Collections -->
+    <section class="featured-collections">
+        <div class="container">
+            <h2 class="section-title">Featured Collections</h2>
+            <div class="collections-grid">
+                <div class="collection-card" onclick="filterByCategory('fabrics')">
+                    <div class="collection-image">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Premium Fabrics</h3>
+                    <p>Finest quality cotton & silk blends</p>
+                </div>
+                <div class="collection-card" onclick="filterByCategory('saree')">
+                    <div class="collection-image">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3>Sarees Collection</h3>
+                    <p>Traditional & contemporary designs</p>
+                </div>
+                <div class="collection-card" onclick="filterByCategory('suit')">
+                    <div class="collection-image">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h3>Ladies Suits</h3>
+                    <p>Modern and elegant suit styles</p>
+                </div>
+                <div class="collection-card" onclick="filterByCategory('lehanga')">
+                    <div class="collection-image">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Lehengas</h3>
+                    <p>Festive and casual lehenga designs</p>
+                </div>
+                <div class="collection-card" onclick="filterByCategory('accessories')">
+                    <div class="collection-image">
+                        <i class="fas fa-sparkles"></i>
+                    </div>
+                    <h3>Accessories</h3>
+                    <p>Completing your look with style</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Shop With Us -->
+    <section class="why-shop">
+        <div class="container">
+            <h2 class="section-title">Why Shop With Us</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h3>Fast Shipping</h3>
+                    <p>Quick and reliable delivery to your doorstep</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h3>Easy Returns</h3>
+                    <p>Hassle-free return policy within 30 days</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure Payment</h3>
+                    <p>Safe and encrypted payment methods</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 Support</h3>
+                    <p>Always here to help you anytime</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3>Quality Assured</h3>
+                    <p>Premium quality products guaranteed</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Special Offers</h3>
+                    <p>Exclusive deals and seasonal discounts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Our Gallery</h2>
+            <div class="gallery-filter-buttons">
+                <button class="gallery-filter-btn active" data-filter="all">All</button>
+                <button class="gallery-filter-btn" data-filter="saree">Sarees</button>
+                <button class="gallery-filter-btn" data-filter="suit">Suits</button>
+                <button class="gallery-filter-btn" data-filter="lehanga">Lehengas</button>
+                <button class="gallery-filter-btn" data-filter="accessories">Accessories</button>
+            </div>
+            <div id="galleryContainer" class="gallery-grid">
+                <div class="loading">Loading gallery...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+                <div>
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p id="contactPhone">+977 (Coming Soon)</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p id="contactEmail"><a href="mailto:nepoonline0@gmail.com" style="color: #333; text-decoration: none;">nepoonline0@gmail.com</a></p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p id="contactAddress">Mirchaiya Bazar<br>Sirha, Nepal</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>Business Hours</h4>
+                                <p id="contactHours">Mon - Sat: 10AM - 8PM<br>Sun: 12PM - 6PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="contactForm" class="contact-form" style="margin-top: 30px;">
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="email" placeholder="Your Email" required>
+                        <input type="text" placeholder="Subject" required>
+                        <textarea placeholder="Your Message" rows="4" required></textarea>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+                <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                    <iframe 
+                        width="100%" 
+                        height="500" 
+                        frameborder="0" 
+                        style="border:0; border-radius: 15px;" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1547.58019582342!2d86.24167055982377!3d26.824324307816816!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ec1ff6924cbc71%3A0xe4f6b3adbcb2b413!2sMIRCHAIYA%20BAZAR!5e1!3m2!1sen!2snp!4v1767620308421!5m2!1sen!2snp" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+        <style>
+            @media (max-width: 768px) {
+                .contact-content {
+                    grid-template-columns: 1fr !important;
+                    gap: 30px !important;
+                }
+                iframe {
+                    height: 300px !important;
+                }
+            }
+        </style>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProductModal()">&times;</span>
+            <div class="modal-body">
+                <div class="modal-image-section">
+                    <img id="carouselMainImage" src="" alt="Product Image" class="main-image">
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev" onclick="prevImage()">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <button class="carousel-btn next" onclick="nextImage()">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="carousel-thumbnails" id="thumbnailsContainer">
+                        <!-- Thumbnails will be loaded here -->
+                    </div>
+                    <div class="image-counter">
+                        <span id="currentImage">1</span> of <span id="totalImages">1</span>
+                    </div>
+                </div>
+                <div class="modal-info-section">
+                    <h2 id="modalProductName">Product Name</h2>
+                    <div class="product-meta">
+                        <span id="stockStatus" class="stock-status">In Stock</span>
+                        <span class="price" id="modalProductPrice">₹0</span>
+                    </div>
+                    <p id="modalProductDescription">Product description</p>
+                    
+                    <div class="quantity-selector">
+                        <label for="quantityInput">Quantity:</label>
+                        <div class="quantity-controls">
+                            <button type="button" onclick="decreaseQuantity()">−</button>
+                            <input type="number" id="quantityInput" value="1" min="1" readonly>
+                            <button type="button" onclick="increaseQuantity()">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="addToCart()">Add to Cart</button>
+                        <button class="btn btn-secondary" onclick="buyNow()">Buy Now</button>
+                    </div>
+                    
+                    <div class="product-benefits">
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Premium Quality</li>
+                            <li><i class="fas fa-check"></i> Authentic Design</li>
+                            <li><i class="fas fa-check"></i> Fast Delivery</li>
+                            <li><i class="fas fa-check"></i> Easy Returns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About Us</h4>
+                    <p>Nepo Online stores brings you the finest collection of fabrics and fashion items for every occasion with premium quality and competitive prices.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;"><i class="fas fa-map-marker-alt"></i> <strong>Mirchaiya Bazar, Sirha, Nepal</strong></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="#shop">Shop</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="orders.html">Orders</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:nepoonline0@gmail.com">nepoonline0@gmail.com</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:contact@nepoonline.com">contact@nepoonline.com</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:sales@nepoonline.com">sales@nepoonline.com</a></li>
+                        <li><i class="fas fa-envelope"></i> <a href="mailto:admin@nepoonline.com">admin@nepoonline.com</a></li>
+                        <li style="margin-top: 10px;"><i class="fas fa-phone"></i> <a href="tel:033590207">033590207</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Follow Us</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61580118031654" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://wa.me/9779823145063" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/nepoonline0/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Reviews</h4>
+                    <ul id="footer-reviews-list">
+                        <li>Loading reviews...</li>
+                    </ul>
+                    <button id="writeReviewBtn" class="btn btn-secondary" style="margin-top:10px;">Write a Review</button>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Nepo Online stores. All rights reserved. | Premium Fashion & Fabrics | Designed with <i class="fas fa-heart" style="color: #e94560;"></i> for excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="supabase-new.js"></script>
+    <script src="modern-ecommerce.js"></script>
+    <script>
+    // Fetch and display latest 3 reviews in footer
+    async function loadFooterReviews() {
+        const reviewsList = document.getElementById('footer-reviews-list');
+        if (!reviewsList) return;
+        try {
+            // Use Supabase client if available, else fallback to static
+            let reviews = [];
+            if (window.supabaseClient) {
+                const { data, error } = await window.supabaseClient
+                    .from('reviews')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false })
+                    .limit(3);
+                if (!error && data) reviews = data;
+            }
+            if (!reviews || reviews.length === 0) {
+                reviewsList.innerHTML = '<li>No reviews yet.</li>';
+                return;
+            }
+            reviewsList.innerHTML = reviews.map(r =>
+                `<li style="margin-bottom:10px;">
+                    <strong>${r.customer_name || 'Customer'}</strong>:
+                    <span style="color:#ffc107;">${'★'.repeat(r.rating || 5)}</span><br>
+                    <span style="font-size:13px;">${r.review_text ? r.review_text.substring(0, 80) : ''}${r.review_text && r.review_text.length > 80 ? '...' : ''}</span>
+                </li>`
+            ).join('');
+        } catch (e) {
+            reviewsList.innerHTML = '<li>Could not load reviews.</li>';
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navMenu = document.querySelector('nav.nav-menu ul');
+        
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navMenu.classList.toggle('show');
+                mobileMenuBtn.classList.toggle('active');
+            });
+            
+            // Close menu when a link is clicked
+            document.querySelectorAll('nav.nav-menu a').forEach(link => {
+                link.addEventListener('click', function() {
+                    navMenu.classList.remove('show');
+                    mobileMenuBtn.classList.remove('active');
+                });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.closest('nav.nav-menu') && !event.target.closest('.mobile-menu-btn')) {
+                    navMenu.classList.remove('show');
+                    mobileMenuBtn.classList.remove('active');
+                }
+            });
+        }
+        
+        loadFooterReviews();
+        var btn = document.getElementById('writeReviewBtn');
+        if (btn) btn.onclick = function() { window.location.href = 'review.html'; };
+    });
+    </script>
+
+    <!-- Floating WhatsApp Button -->
+    <style>
+        .whatsapp-floating-btn {
+            position: fixed;
+            bottom: 80px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+            text-decoration: none;
+            z-index: 998;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 30px;
+        }
+
+        .whatsapp-floating-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-floating-btn:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-floating-btn {
+                bottom: 75px;
+                left: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .whatsapp-floating-btn {
+                bottom: 70px;
+                left: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+    </style>
+
+    <!-- WhatsApp Button Link -->
+    <a href="https://wa.me/9779823145063" target="_blank" class="whatsapp-floating-btn" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+</body>
+</html>

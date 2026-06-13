@@ -1,0 +1,450 @@
+<!-- ENHANCED FOOTER WITH SHIPPING POLICY AND CUSTOMER REVIEWS -->
+<!-- Replace the existing footer in your index.html, product-details.html, orders.html with this enhanced version -->
+
+<style>
+    /* Enhanced Footer Styles */
+    footer {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        padding: 60px 20px 20px;
+        margin-top: 80px;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .footer-section {
+        padding: 20px 0;
+    }
+
+    .footer-section h3 {
+        color: #ff6b8b;
+        font-size: 18px;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #ff6b8b;
+        padding-bottom: 10px;
+    }
+
+    .footer-section p {
+        line-height: 1.8;
+        color: #ccc;
+        font-size: 14px;
+    }
+
+    .footer-section ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 10px;
+    }
+
+    .footer-section a {
+        color: #ccc;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-size: 14px;
+    }
+
+    .footer-section a:hover {
+        color: #ff6b8b;
+        padding-left: 5px;
+    }
+
+    /* Shipping Policy Section */
+    .shipping-policy {
+        background: rgba(255, 107, 139, 0.1);
+        border-left: 4px solid #ff6b8b;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+    }
+
+    .shipping-policy h4 {
+        color: #ff6b8b;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .shipping-policy ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .shipping-policy li {
+        color: #ccc;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 8px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .shipping-policy li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #ff6b8b;
+        font-weight: bold;
+    }
+
+    /* Customer Reviews Carousel */
+    .customer-reviews {
+        background: rgba(255, 107, 139, 0.1);
+        border-left: 4px solid #4facfe;
+        padding: 20px;
+        border-radius: 4px;
+        margin-bottom: 30px;
+    }
+
+    .customer-reviews h4 {
+        color: #4facfe;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .reviews-carousel {
+        display: flex;
+        gap: 15px;
+        overflow-x: auto;
+        padding: 10px 0;
+        scroll-behavior: smooth;
+    }
+
+    .reviews-carousel::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .reviews-carousel::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .reviews-carousel::-webkit-scrollbar-thumb {
+        background: #ff6b8b;
+        border-radius: 4px;
+    }
+
+    .review-card {
+        flex-shrink: 0;
+        width: 250px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid rgba(79, 172, 254, 0.3);
+    }
+
+    .review-stars {
+        color: #ffc107;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .review-text {
+        color: #ccc;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-bottom: 10px;
+        font-style: italic;
+    }
+
+    .review-author {
+        color: #ff6b8b;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Footer Features */
+    .footer-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+    }
+
+    .feature-item {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .feature-icon {
+        font-size: 32px;
+        margin-bottom: 10px;
+        color: #ff6b8b;
+    }
+
+    .feature-text {
+        font-size: 13px;
+        color: #ccc;
+    }
+
+    .feature-text strong {
+        color: #fff;
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    /* Footer Bottom */
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+        text-align: center;
+        color: #999;
+        font-size: 12px;
+    }
+
+    .footer-bottom a {
+        color: #ff6b8b;
+        text-decoration: none;
+    }
+
+    .footer-bottom a:hover {
+        text-decoration: underline;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .social-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        background: rgba(255, 107, 139, 0.2);
+        color: #ff6b8b;
+        border-radius: 50%;
+        transition: all 0.3s;
+    }
+
+    .social-links a:hover {
+        background: #ff6b8b;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+        footer {
+            padding: 40px 15px 15px;
+        }
+
+        .footer-content {
+            gap: 20px;
+        }
+
+        .reviews-carousel {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .review-card {
+            width: 200px;
+        }
+    }
+</style>
+
+<!-- Enhanced Footer HTML -->
+<footer>
+    <div class="footer-container">
+        <!-- Key Features -->
+        <div class="footer-features">
+            <div class="feature-item">
+                <div class="feature-icon">🚚</div>
+                <div class="feature-text">
+                    <strong>Free Shipping</strong>
+                    On orders over Rs. 1,000
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">
+                    <strong>Secure Payment</strong>
+                    100% secure transactions
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📞</div>
+                <div class="feature-text">
+                    <strong>24/7 Support</strong>
+                    Always here to help you
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">↩️</div>
+                <div class="feature-text">
+                    <strong>Easy Returns</strong>
+                    30-day return policy
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping Policy & Customer Reviews -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px;">
+            <!-- Shipping Policy -->
+            <div class="shipping-policy">
+                <h4>📦 Shipping Policy</h4>
+                <ul>
+                    <li>Free shipping on orders over Rs. 1,000</li>
+                    <li>Shipping within 1-3 business days</li>
+                    <li>Delivery within 5-7 working days</li>
+                    <li>Real-time order tracking available</li>
+                    <li>Cash on Delivery (COD) accepted</li>
+                    <li>All orders fully insured</li>
+                    <li>Easy returns within 30 days</li>
+                </ul>
+            </div>
+
+            <!-- Customer Reviews -->
+            <div class="customer-reviews">
+                <h4>⭐ Customer Reviews</h4>
+                <div class="reviews-carousel" id="reviewsCarousel">
+                    <!-- Will be populated by JavaScript -->
+                    <div style="color: #ccc; font-size: 13px; padding: 10px;">Loading reviews...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Footer Content -->
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Nepo Online stores</h3>
+                
+               
+                    <a href="https://www.facebook.com/profile.php?id=61580118031654" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://wa.me/977982314506" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/nepoonline0/" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@NepaOnline1" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="orders.html">My Orders</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Policies</h3>
+                <ul>
+                    <li><a href="#shipping">Shipping Policy</a></li>
+                    <li><a href="#returns">Return Policy</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms & Conditions</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color: #ff6b8b; margin-right: 8px;"></i>
+               Mirchaiya bazar -05 siraha , nepal
+                </p>
+                <p>
+                    <i class="fas fa-phone" style="color: #ff6b8b; margin-right: 8px;"></i>
+                    <a href="tel:+977033590207" style="color: #ccc;">033590207</a>
+                </p>
+                <p style="font-weight: 600; color: #ff6b8b; font-size: 15px;">
+                    <i class="fas fa-phone-alt" style="color: #ff6b8b; margin-right: 8px;"></i>
+                    Call: <span style="font-size: 16px;">033590207</span>
+                </p>
+                <p>
+                    <i class="fas fa-envelope" style="color: #ff6b8b; margin-right: 8px;"></i>
+                    <a href="mailto:nepoonline0@gmail.com" style="color: #ccc;">nepoonline0@gmail.com</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Nepo Online stores. All rights reserved. | <strong>Contact: 033590207</strong></p>
+            <p>Designed with ❤️ for beauty lovers | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/profile.php?id=61580118031654" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://wa.me/977982314506" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/nepoonline0/" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://youtube.com" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Script to load approved customer reviews in footer -->
+<script>
+// Load top approved reviews for footer display
+async function loadFooterReviews() {
+    try {
+        const reviews = await fetchAllReviews('approved');
+        if (!reviews || reviews.length === 0) {
+            document.getElementById('reviewsCarousel').innerHTML = `
+                <p style="color: #ccc; font-size: 13px;">No customer reviews yet. Be the first to review!</p>
+            `;
+            return;
+        }
+
+        // Show 5 most recent reviews
+        const topReviews = reviews.slice(-5).reverse();
+        
+        const html = topReviews.map(review => `
+            <div class="review-card">
+                <div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                <div class="review-text">"${escapeHtml(review.review_text.substring(0, 80))}${review.review_text.length > 80 ? '...' : ''}"</div>
+                <div class="review-author">— ${escapeHtml(review.customer_name)}</div>
+            </div>
+        `).join('');
+
+        document.getElementById('reviewsCarousel').innerHTML = html;
+    } catch (error) {
+        console.error('Error loading footer reviews:', error);
+        document.getElementById('reviewsCarousel').innerHTML = `
+            <p style="color: #ccc; font-size: 13px;">Couldn't load reviews at this time</p>
+        `;
+    }
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Load reviews when page is ready
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (typeof fetchAllReviews === 'function') {
+            loadFooterReviews();
+        }
+    }, 1000);
+});
+
+// Refresh reviews every 5 minutes
+setInterval(loadFooterReviews, 5 * 60 * 1000);
+</script>

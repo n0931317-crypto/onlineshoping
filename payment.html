@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Nepo Online stores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .checkout-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background-color: #f8f9ff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Payment Method Selection - Radio/Checkbox Style */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .payment-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+        .payment-option input[type="radio"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            margin-right: 18px;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .payment-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .payment-info {
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .payment-info h3 {
+            margin-bottom: 4px;
+            color: #333;
+            font-size: 1.05em;
+        }
+
+        .payment-info p {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .payment-icon {
+            font-size: 1.8em;
+            margin-left: 15px;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 20px;
+            max-height: fit-content;
+        }
+
+        .order-summary h2 {
+            border-color: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+        .cart-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            opacity: 0.95;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-name {
+            flex: 1;
+        }
+
+        .cart-item-qty {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 5px;
+            margin: 0 10px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            text-align: right;
+            min-width: 80px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 12px 0;
+            font-size: 1.05em;
+        }
+
+        .summary-row.total {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            border: none;
+            padding: 0;
+        }
+
+        .modal-content p {
+            color: #666;
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        .order-number {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        .required {
+            color: #ff6b6b;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .field-error {
+            border-color: #ff6b6b !important;
+            background-color: #fff5f5 !important;
+        }
+
+        #file-upload-box {
+            border: 2px dashed #667eea;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        #file-upload-box:hover {
+            border-color: #764ba2;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+
+        #qr-code-display {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        #qr-code-display img {
+            max-width: 100%;
+            max-height: 280px;
+            border-radius: 8px;
+        }
+
+        .loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .checkout-wrapper {
+                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .order-summary {
+                position: static;
+                order: -1;
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .section {
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 15px;
+            }
+
+            .section h2 {
+                font-size: 1.25em;
+                margin-bottom: 15px;
+                padding-bottom: 12px;
+            }
+
+            .header {
+                margin-bottom: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+                margin-bottom: 8px;
+            }
+
+            .header p {
+                font-size: 0.95em;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 10px 12px;
+                font-size: 16px;
+            }
+
+            .form-group label {
+                font-size: 0.9em;
+                margin-bottom: 6px;
+            }
+
+            .payment-option {
+                padding: 15px;
+                font-size: 0.95em;
+            }
+
+            .payment-option input[type="radio"] {
+                width: 18px;
+                height: 18px;
+                margin-right: 12px;
+            }
+
+            .payment-info h3 {
+                font-size: 0.95em;
+            }
+
+            .cart-items {
+                max-height: 250px;
+            }
+
+            .cart-item {
+                padding: 8px 0;
+                font-size: 0.9em;
+            }
+
+            .cart-item-price {
+                min-width: 70px;
+            }
+
+            .summary-row {
+                font-size: 0.95em;
+                margin: 10px 0;
+            }
+
+            .summary-row.total {
+                font-size: 1.1em;
+            }
+
+            .btn {
+                padding: 12px;
+                font-size: 0.95em;
+                margin-top: 15px;
+            }
+
+            #file-upload-box {
+                padding: 20px;
+            }
+
+            #qr-code-display {
+                min-height: 250px;
+            }
+
+            #qr-code-display img {
+                max-height: 230px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            .modal-icon {
+                font-size: 3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .checkout-wrapper {
+                gap: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .order-summary {
+                order: -1;
+                position: static;
+                margin-bottom: 15px;
+                top: auto;
+            }
+
+            .section {
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            }
+
+            .section h2 {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+                padding-bottom: 10px;
+            }
+
+            .header {
+                margin-bottom: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 0.85em;
+                opacity: 0.85;
+            }
+
+            .back-btn {
+                padding: 8px 15px;
+                font-size: 0.85em;
+                margin-bottom: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                font-size: 0.85em;
+                margin-bottom: 5px;
+                font-weight: 600;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 6px;
+            }
+
+            .form-group textarea {
+                min-height: 80px;
+            }
+
+            .form-group input:focus,
+            .form-group textarea:focus {
+                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            }
+
+            .payment-option {
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+            }
+
+            .payment-option input[type="radio"] {
+                width: 16px;
+                height: 16px;
+                margin-right: 10px;
+            }
+
+            .payment-info h3 {
+                font-size: 0.9em;
+                margin-bottom: 2px;
+            }
+
+            .payment-info p {
+                font-size: 0.8em;
+            }
+
+            .payment-icon {
+                font-size: 1.4em;
+                margin-left: 10px;
+            }
+
+            .order-summary {
+                top: 0;
+                margin-bottom: 10px;
+            }
+
+            .order-summary h2 {
+                font-size: 1.05em;
+            }
+
+            .cart-items {
+                max-height: 200px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+
+            .cart-item {
+                padding: 6px 0;
+                font-size: 0.85em;
+            }
+
+            .cart-item-qty {
+                padding: 3px 8px;
+                font-size: 0.8em;
+                margin: 0 8px;
+            }
+
+            .cart-item-price {
+                min-width: 60px;
+                font-size: 0.85em;
+            }
+
+            .summary-row {
+                font-size: 0.85em;
+                margin: 8px 0;
+            }
+
+            .summary-row.total {
+                font-size: 0.95em;
+                margin-top: 15px;
+                padding-top: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 11px;
+                font-size: 0.9em;
+                margin-top: 12px;
+                border-radius: 8px;
+            }
+
+            #file-upload-box {
+                border: 2px dashed #667eea;
+                padding: 15px;
+                border-radius: 8px;
+                font-size: 0.85em;
+            }
+
+            #qr-code-display {
+                min-height: 220px;
+                padding: 15px;
+            }
+
+            #qr-code-display img {
+                max-height: 200px;
+                max-width: 90%;
+            }
+
+            .loader {
+                width: 35px;
+                height: 35px;
+                border-width: 3px;
+            }
+
+            .modal-content {
+                padding: 25px 15px;
+                max-width: 95%;
+                border-radius: 12px;
+            }
+
+            .modal-icon {
+                font-size: 2.5em;
+                margin-bottom: 15px;
+            }
+
+            .modal-content h2 {
+                font-size: 1.15em;
+                margin-bottom: 12px;
+            }
+
+            .modal-content p {
+                font-size: 0.9em;
+            }
+
+            .order-number {
+                padding: 12px;
+                font-size: 0.95em;
+                border-radius: 6px;
+            }
+
+            .error-message {
+                font-size: 0.8em;
+                margin-top: 4px;
+            }
+
+            .checkout-wrapper {
+                gap: 0;
+            }
+
+            .form-row {
+                gap: 10px;
+            }
+
+            .payment-methods {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="index.html" class="back-btn">← Back to Shopping</a>
+            <h1>🛒 Checkout</h1>
+            <p>Complete your purchase securely</p>
+        </div>
+
+        <div class="checkout-wrapper">
+            <!-- Left Side: Delivery & Payment Information -->
+            <div class="section">
+                <h2>📦 Delivery Information</h2>
+                
+                <div class="form-group">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input type="text" id="customer-name" placeholder="Enter your full name" required>
+                    <div class="error-message"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="customer-email" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone <span class="required">*</span></label>
+                        <input type="tel" id="customer-phone" placeholder="+977 98xxxxxxxx" required>
+                        <div class="error-message"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Street Address <span class="required">*</span></label>
+                    <input type="text" id="street-address" placeholder="House number and street name" required>
+                    <div class="error-message"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City/District <span class="required">*</span></label>
+                        <input type="text" id="city" placeholder="Kathmandu, Pokhara, etc." required>
+                        <div class="error-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Postal Code</label>
+                        <input type="text" id="zip-code" placeholder="1234">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred Delivery Date <span class="required">*</span></label>
+                    <input type="date" id="delivery-date" required>
+                    <div class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Special Instructions (Optional)</label>
+                    <textarea id="delivery-notes" placeholder="Any special instructions for delivery..."></textarea>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <h2 style="margin-top: 40px;">💳 Payment Method <span class="required">*</span></h2>
+                
+                <div class="payment-methods">
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="esewa" data-method="esewa">
+                        <div class="payment-info">
+                            <h3>eSewa</h3>
+                            <p>Quick and secure mobile payment • Instant verification</p>
+                        </div>
+                        <div class="payment-icon">💰</div>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="khalti" data-method="khalti">
+                        <div class="payment-info">
+                            <h3>Khalti</h3>
+                            <p>Digital wallet • Easy transactions • Rewards</p>
+                        </div>
+                        <div class="payment-icon">📱</div>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="bank" data-method="bank">
+                        <div class="payment-info">
+                            <h3>Bank Transfer</h3>
+                            <p>Direct bank account transfer • Secure payment</p>
+                        </div>
+                        <div class="payment-icon">🏦</div>
+                    </label>
+                </div>
+
+                <div class="error-message" id="payment-error"></div>
+
+                <!-- QR Code Display Section (Hidden by default) -->
+                <div id="qr-section" style="display: none; margin-top: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 1.2em;">📱 Scan QR Code to Pay</h3>
+                    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #e0e0e0;">
+                        <div id="qr-code-display" style="min-height: 250px; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #999;">QR code will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Code & Proof Section (Hidden by default) -->
+                <div id="transaction-section" style="display: none; margin-top: 30px;">
+                    <h2>✓ Transaction Proof</h2>
+
+                    <div class="form-group">
+                        <label>Transaction ID / Reference Number <span class="required">*</span></label>
+                        <input type="text" id="transaction-code" placeholder="Enter transaction ID (e.g., TXN123456789)" required>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Screenshot <span class="required">*</span></label>
+                        <input type="file" id="transaction-screenshot" accept="image/*" style="display: none;" required>
+                        <div style="border: 2px dashed #667eea; padding: 30px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: #f8f9ff;" id="file-upload-box">
+                            <div id="upload-content">
+                                <div style="font-size: 2em; margin-bottom: 10px;">📸</div>
+                                <div style="font-weight: 600; color: #333; margin-bottom: 5px;">Click to upload screenshot</div>
+                                <div style="font-size: 0.9em; color: #999;">PNG, JPG, or GIF • Max 5MB</div>
+                            </div>
+                        </div>
+                        <div id="screenshot-preview" style="margin-top: 15px; display: none; text-align: center;">
+                            <img id="screenshot-img" src="" alt="Preview" style="max-width: 100%; max-height: 250px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div style="margin-top: 10px; font-size: 0.9em; color: #28a745;">✓ Screenshot selected</div>
+                            <button type="button" onclick="document.getElementById('transaction-screenshot').click(); return false;" style="margin-top: 10px; padding: 8px 16px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em;">Change Screenshot</button>
+                        </div>
+                        <div class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Notes (Optional)</label>
+                        <textarea id="transaction-notes" placeholder="Add any notes about your payment (e.g., payment details, issues faced, etc.)..." style="resize: vertical; min-height: 80px;"></textarea>
+                        <div class="error-message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Order Summary -->
+            <div class="section order-summary">
+                <h2>📋 Order Summary</h2>
+                
+                <div class="cart-items" id="cart-items-container">
+                    <!-- Cart items will be populated here -->
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">₹0.00</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Delivery Charge:</span>
+                    <span id="delivery-charge">₹50.00</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total Amount:</span>
+                    <span id="total-amount">₹0.00</span>
+                </div>
+
+                <div class="loader" id="payment-loader"></div>
+
+                <button class="btn btn-primary" onclick="submitPayment()">
+                    ✓ Place Order & Pay Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your purchase</p>
+            <div class="order-number" id="modal-order-number"></div>
+            <p style="color: #999; font-size: 0.95em;">Redirecting to invoice...</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://yngmogqtfyrnpkwtasut.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InluZ21vZ3F0ZnlybnBrd3Rhc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NDI5MzEsImV4cCI6MjA4MzAxODkzMX0.y3rW8dq9prOg3-hAJeXUjcBZluRTD9LfUhyiOa5s2C4';
+        
+        let supabaseClient = null;
+
+        async function initSupabase() {
+            try {
+                const { createClient } = window.supabase;
+                supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('✅ Supabase initialized');
+            } catch (error) {
+                console.error('Error initializing Supabase:', error);
+            }
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = initSupabase;
+        document.head.appendChild(script);
+
+        // Load cart items as early as possible with retry mechanism
+        function loadCartItemsWithRetry() {
+            const maxRetries = 3;
+            let retries = 0;
+            
+            function attemptLoad() {
+                const container = document.getElementById('cart-items-container');
+                if (!container) {
+                    retries++;
+                    if (retries < maxRetries) {
+                        setTimeout(attemptLoad, 100);
+                    }
+                    return;
+                }
+                loadCartItems();
+            }
+            
+            attemptLoad();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('✅ DOM Content Loaded');
+                loadCartItemsWithRetry();
+                setupScreenshotUpload();
+            });
+        } else {
+            // DOM is already loaded
+            console.log('✅ DOM already loaded');
+            loadCartItemsWithRetry();
+            setupScreenshotUpload();
+        }
+
+        // Also initialize on window load to ensure everything is ready
+        window.addEventListener('load', function() {
+            console.log('✅ Window loaded');
+            setTimeout(function() {
+                loadCartItems();
+                setupScreenshotUpload();
+            }, 100);
+        });
+
+        function initializePage() {
+            console.log('🔄 Initializing payment page...');
+            loadCartItems();
+            setupPaymentMethodSelection();
+            setMinDeliveryDate();
+            setupScreenshotUpload();
+            console.log('✅ Payment page initialized');
+        }
+
+        // Setup screenshot upload handler
+        function setupScreenshotUpload() {
+            console.log('🔧 Setting up screenshot upload...');
+            
+            const fileInput = document.getElementById('transaction-screenshot');
+            const uploadBox = document.getElementById('file-upload-box');
+            const previewDiv = document.getElementById('screenshot-preview');
+            const previewImg = document.getElementById('screenshot-img');
+            const uploadContent = document.getElementById('upload-content');
+
+            if (!fileInput) {
+                console.error('❌ File input not found');
+                return;
+            }
+
+            if (!uploadBox) {
+                console.error('❌ Upload box not found');
+                return;
+            }
+
+            console.log('✅ All required elements found');
+
+            // Handle click on upload box
+            uploadBox.addEventListener('click', function(e) {
+                console.log('📂 Upload box clicked');
+                fileInput.click();
+            });
+
+            // Handle file selection
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Handle drag and drop
+            uploadBox.addEventListener('dragenter', preventDefaults);
+            uploadBox.addEventListener('dragover', preventDefaults);
+            uploadBox.addEventListener('dragleave', preventDefaults);
+            uploadBox.addEventListener('drop', handleDrop);
+
+            uploadBox.addEventListener('dragover', function(e) {
+                uploadBox.style.borderColor = '#ff9800';
+                uploadBox.style.background = '#fff3e0';
+            });
+
+            uploadBox.addEventListener('dragleave', function(e) {
+                uploadBox.style.borderColor = '#667eea';
+                uploadBox.style.background = '#f8f9ff';
+            });
+
+            console.log('✅ Screenshot upload initialized');
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function handleDrop(e) {
+                preventDefaults(e);
+                uploadBox.style.borderColor = '#667eea';
+                uploadBox.style.background = '#f8f9ff';
+                
+                const files = e.dataTransfer.files;
+                if (files && files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect();
+                }
+            }
+
+            function handleFileSelect() {
+                const file = fileInput.files[0];
+                console.log('📝 File select handler called, file:', file?.name);
+                
+                if (!file) {
+                    console.log('⚠️ No file selected');
+                    return;
+                }
+
+                console.log('📸 File:', file.name, '| Size:', file.size, '| Type:', file.type);
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('❌ Please select an image file');
+                    fileInput.value = '';
+                    return;
+                }
+
+                // Validate file size (5MB)
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('❌ File size must be less than 5MB');
+                    fileInput.value = '';
+                    return;
+                }
+
+                // Read and display file
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log('✅ File loaded successfully');
+                    previewImg.src = e.target.result;
+                    uploadContent.style.display = 'none';
+                    previewDiv.style.display = 'block';
+                };
+                reader.onerror = function(error) {
+                    console.error('❌ Error reading file:', error);
+                    alert('❌ Error reading file');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadCartItems() {
+            const cartItems = JSON.parse(sessionStorage.getItem('cartItems') || '[]');
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total-amount');
+            
+            console.log('📦 Loading cart items:', cartItems);
+            console.log('🔍 Container element:', container);
+            console.log('📊 sessionStorage keys:', Object.keys(sessionStorage));
+
+            if (!container) {
+                console.error('❌ Cart items container not found');
+                return;
+            }
+
+            // If cart is empty, show message and reset totals
+            if (!cartItems || cartItems.length === 0) {
+                console.warn('⚠️ Cart is empty');
+                container.innerHTML = '<div style="text-align: center; opacity: 0.8; padding: 20px; color: white;">Your cart is empty. <a href="index.html" style="color: #4facfe; text-decoration: underline;">Continue Shopping</a></div>';
+                if (subtotalEl) subtotalEl.textContent = '₹0.00';
+                if (totalEl) totalEl.textContent = '₹0.00';
+                return;
+            }
+
+            // Build cart items HTML
+            let subtotal = 0;
+            const itemsHTML = cartItems.map((item, index) => {
+                const price = parseFloat(item.price) || 0;
+                const qty = parseInt(item.qty) || 1;
+                const itemTotal = price * qty;
+                subtotal += itemTotal;
+                
+                return `
+                    <div class="cart-item" style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <div>
+                            <div class="cart-item-name">${item.name || 'Unknown Product'}</div>
+                            <div class="cart-item-qty" style="font-size: 0.9em; opacity: 0.8;">Qty: ${qty}</div>
+                        </div>
+                        <div class="cart-item-price">₹${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = itemsHTML;
+
+            // Calculate delivery charge
+            const deliveryCharge = 50;
+            const total = subtotal + deliveryCharge;
+
+            console.log('💰 Cart totals - Subtotal:', subtotal, 'Total:', total);
+
+            // Update totals
+            if (subtotalEl) subtotalEl.textContent = '₹' + subtotal.toFixed(2);
+            if (totalEl) totalEl.textContent = '₹' + total.toFixed(2);
+
+            // Save total to sessionStorage
+            sessionStorage.setItem('totalAmount', total.toString());
+            console.log('✅ Cart items loaded successfully');
+        }
+
+        function setupPaymentMethodSelection() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const radioButtons = document.querySelectorAll('input[name="payment-method"]');
+
+            paymentOptions.forEach((option, index) => {
+                option.addEventListener('click', () => {
+                    radioButtons[index].checked = true;
+                    updatePaymentOptionStyles();
+                    document.getElementById('payment-error').classList.remove('show');
+                    showTransactionSections(radioButtons[index].value);
+                });
+            });
+
+            radioButtons.forEach((radio, index) => {
+                radio.addEventListener('change', () => {
+                    updatePaymentOptionStyles();
+                    document.getElementById('payment-error').classList.remove('show');
+                    showTransactionSections(radio.value);
+                });
+            });
+
+            // Setup file upload
+            const fileUpload = document.getElementById('screenshot-upload');
+            fileUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('preview-img').src = event.target.result;
+                        document.getElementById('file-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function showTransactionSections(paymentMethod) {
+            // Show QR and transaction sections
+            document.getElementById('qr-section').style.display = 'block';
+            document.getElementById('transaction-section').style.display = 'block';
+
+            // Load and display QR code for selected payment method
+            loadPaymentQRCode(paymentMethod);
+        }
+
+        async function loadPaymentQRCode(paymentMethod) {
+            try {
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase not initialized, QR codes unavailable');
+                    displayNoQRMessage();
+                    return;
+                }
+
+                console.log(`📱 Loading QR code for: ${paymentMethod}`);
+
+                // Set a timeout for the Supabase query (5 seconds)
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), 5000)
+                );
+
+                try {
+                    // Try to fetch QR codes from payment_qr_images table (new approach)
+                    const queryPromise = supabaseClient
+                        .from('payment_qr_images')
+                        .select('file_path')
+                        .eq('payment_method', paymentMethod)
+                        .eq('is_active', true)
+                        .single();
+
+                    const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+
+                    if (error && error.code !== 'PGRST116') {
+                        // PGRST116 means no rows found, which is fine
+                        console.warn('⚠️ QR lookup failed:', error.message);
+                        // Try fallback to admin_settings
+                        loadPaymentQRCodeFallback(paymentMethod);
+                        return;
+                    }
+
+                    if (data && data.file_path) {
+                        console.log('✅ QR code found from payment_qr_images, displaying...');
+                        displayQRCode(data.file_path);
+                    } else {
+                        console.log('⚠️ QR code not found in payment_qr_images, trying fallback...');
+                        loadPaymentQRCodeFallback(paymentMethod);
+                    }
+                } catch (timeoutError) {
+                    console.warn('⚠️ QR loading timed out, trying fallback...');
+                    loadPaymentQRCodeFallback(paymentMethod);
+                }
+            } catch (error) {
+                console.error('❌ Error in loadPaymentQRCode:', error);
+                displayNoQRMessage();
+            }
+        }
+
+        // Fallback to admin_settings table for old QR storage method
+        async function loadPaymentQRCodeFallback(paymentMethod) {
+            try {
+                if (!supabaseClient) {
+                    displayNoQRMessage();
+                    return;
+                }
+
+                console.log(`📱 Trying fallback: Loading QR code from admin_settings for: ${paymentMethod}`);
+
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), 5000)
+                );
+
+                const queryPromise = supabaseClient
+                    .from('admin_settings')
+                    .select('qr_esewa, qr_khalti, qr_bank')
+                    .limit(1);
+
+                const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+
+                if (error) {
+                    console.warn('⚠️ Fallback admin_settings query failed:', error.message);
+                    displayNoQRMessage();
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    console.log('⚠️ No QR codes configured in admin_settings');
+                    displayNoQRMessage();
+                    return;
+                }
+
+                const settings = data[0];
+                let qrUrl = null;
+
+                if (paymentMethod === 'esewa') {
+                    qrUrl = settings.qr_esewa;
+                } else if (paymentMethod === 'khalti') {
+                    qrUrl = settings.qr_khalti;
+                } else if (paymentMethod === 'bank') {
+                    qrUrl = settings.qr_bank;
+                }
+
+                if (qrUrl) {
+                    console.log('✅ QR code found from admin_settings, displaying...');
+                    displayQRCode(qrUrl);
+                } else {
+                    console.log('⚠️ QR code not configured in admin_settings');
+                    displayNoQRMessage();
+                }
+            } catch (error) {
+                console.error('❌ Error in fallback QR loading:', error);
+                displayNoQRMessage();
+            }
+        }
+
+        function displayQRCode(qrUrl) {
+            const qrDisplay = document.getElementById('qr-code-display');
+            
+            if (!qrUrl) {
+                displayNoQRMessage();
+                return;
+            }
+
+            // Handle base64 images
+            if (qrUrl.startsWith('data:image')) {
+                qrDisplay.innerHTML = `<img src="${qrUrl}" alt="QR Code" style="max-width: 100%; max-height: 280px; border-radius: 8px;">`;
+            } 
+            // Handle HTTP URLs
+            else if (qrUrl.startsWith('http')) {
+                qrDisplay.innerHTML = `<img src="${qrUrl}" alt="QR Code" style="max-width: 100%; max-height: 280px; border-radius: 8px;" onerror="displayNoQRMessage()">`;
+            }
+            // Handle storage paths
+            else {
+                // Try to get from Supabase storage
+                if (supabaseClient) {
+                    try {
+                        const { data } = supabaseClient.storage.from('payment_qrs').getPublicUrl(qrUrl);
+                        if (data && data.publicUrl) {
+                            qrDisplay.innerHTML = `<img src="${data.publicUrl}" alt="QR Code" style="max-width: 100%; max-height: 280px; border-radius: 8px;" onerror="displayNoQRMessage()">`;
+                        } else {
+                            displayNoQRMessage();
+                        }
+                    } catch (e) {
+                        displayNoQRMessage();
+                    }
+                } else {
+                    displayNoQRMessage();
+                }
+            }
+        }
+
+        function displayNoQRMessage() {
+            const qrDisplay = document.getElementById('qr-code-display');
+            if (qrDisplay) {
+                qrDisplay.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                        <p style="color: #666; margin: 0 0 10px 0;">📱 QR Code Not Available</p>
+                        <small style="color: #999;">Enter your transaction ID below</small>
+                    </div>
+                `;
+            }
+        }
+
+        function updatePaymentOptionStyles() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const radioButtons = document.querySelectorAll('input[name="payment-method"]');
+
+            paymentOptions.forEach((option, index) => {
+                if (radioButtons[index].checked) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        function setMinDeliveryDate() {
+            const dateInput = document.getElementById('delivery-date');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+        }
+
+        function validateForm() {
+            const fields = {
+                'customer-name': 'Full Name',
+                'customer-phone': 'Phone Number',
+                'street-address': 'Street Address',
+                'city': 'City/District',
+                'delivery-date': 'Delivery Date'
+            };
+
+            let isValid = true;
+
+            Object.entries(fields).forEach(([id, label]) => {
+                const input = document.getElementById(id);
+                const value = input.value.trim();
+
+                if (!value) {
+                    input.classList.add('field-error');
+                    const errorMsg = input.parentElement.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.textContent = `${label} is required`;
+                        errorMsg.classList.add('show');
+                    }
+                    isValid = false;
+                } else {
+                    input.classList.remove('field-error');
+                    const errorMsg = input.parentElement.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.textContent = '';
+                        errorMsg.classList.remove('show');
+                    }
+                }
+            });
+
+            // Validate payment method
+            const selectedMethod = document.querySelector('input[name="payment-method"]:checked');
+            if (!selectedMethod) {
+                const paymentError = document.getElementById('payment-error');
+                paymentError.textContent = '❌ Please select a payment method';
+                paymentError.classList.add('show');
+                isValid = false;
+            }
+
+            // Validate transaction code
+            const transactionCode = document.getElementById('transaction-code').value.trim();
+            if (!transactionCode) {
+                const transInput = document.getElementById('transaction-code');
+                transInput.classList.add('field-error');
+                const errorMsg = transInput.parentElement.querySelector('.error-message');
+                if (errorMsg) {
+                    errorMsg.textContent = 'Transaction ID is required';
+                    errorMsg.classList.add('show');
+                }
+                isValid = false;
+            }
+
+            // Validate screenshot upload
+            const screenshot = document.getElementById('transaction-screenshot').files[0];
+            if (!screenshot) {
+                const fileBox = document.getElementById('file-upload-box');
+                fileBox.style.borderColor = '#ff6b6b';
+                fileBox.style.background = '#fff5f5';
+                const errorMsg = document.getElementById('transaction-section').querySelector('.form-group:nth-child(2) .error-message');
+                if (errorMsg) {
+                    errorMsg.textContent = 'Payment screenshot is required';
+                    errorMsg.classList.add('show');
+                }
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        async function submitPayment() {
+            console.log('🔍 Starting payment submission...');
+            
+            // Wait for Supabase if not ready
+            if (!supabaseClient) {
+                console.log('⏳ Waiting for Supabase to initialize...');
+                for (let i = 0; i < 30; i++) {
+                    if (supabaseClient) {
+                        console.log('✅ Supabase ready');
+                        break;
+                    }
+                    await new Promise(r => setTimeout(r, 100));
+                }
+                if (!supabaseClient) {
+                    alert('❌ Supabase failed to initialize. Please refresh the page and try again.');
+                    return;
+                }
+            }
+            
+            if (!validateForm()) {
+                console.warn('⚠️ Form validation failed');
+                return;
+            }
+
+            console.log('✅ Form validation passed');
+            console.log('🔗 Supabase client available:', !!supabaseClient);
+
+            const customerName = document.getElementById('customer-name').value.trim();
+            const customerEmail = document.getElementById('customer-email').value.trim();
+            const customerPhone = document.getElementById('customer-phone').value.trim();
+            const streetAddress = document.getElementById('street-address').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const zipCode = document.getElementById('zip-code').value.trim();
+            const deliveryDate = document.getElementById('delivery-date').value;
+            const deliveryNotes = document.getElementById('delivery-notes').value.trim();
+
+            const selectedPaymentMethod = document.querySelector('input[name="payment-method"]:checked');
+            const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+
+            const transactionCode = document.getElementById('transaction-code').value.trim();
+            const screenshot = document.getElementById('transaction-screenshot').files[0];
+
+            if (!paymentMethod || !transactionCode || !screenshot) {
+                alert('❌ Please fill all required fields');
+                return;
+            }
+
+            const fullAddress = `${streetAddress}, ${city}${zipCode ? ', ' + zipCode : ''}`;
+            const cartItems = JSON.parse(sessionStorage.getItem('cartItems') || '[]');
+            const totalAmount = parseFloat(sessionStorage.getItem('totalAmount') || '0');
+
+            if (cartItems.length === 0) {
+                alert('❌ Your cart is empty');
+                return;
+            }
+
+            const orderNumber = 'ORD-' + Date.now();
+
+            // Convert delivery date to ISO format properly
+            const dateObj = new Date(deliveryDate);
+            const isoDate = dateObj.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+            // Prepare order data with proper types
+            const orderData = {
+                order_number: orderNumber,
+                customer_name: customerName,
+                customer_email: customerEmail || 'no-email@example.com',
+                customer_phone: customerPhone,
+                delivery_address: fullAddress,
+                delivery_date: isoDate,  // Store as YYYY-MM-DD
+                delivery_notes: deliveryNotes,
+                subtotal: parseFloat((totalAmount - 50).toFixed(2)),
+                delivery_charge: 50,
+                total_amount: parseFloat(totalAmount.toFixed(2)),
+                payment_method: paymentMethod.toLowerCase(),
+                transaction_code: transactionCode,
+                has_screenshot: true,
+                screenshot_filename: screenshot.name,
+                status: 'pending_verification',
+                items: cartItems.map(item => ({
+                    product_id: item.id || null,
+                    product_name: item.name,
+                    quantity: parseInt(item.qty) || 1,
+                    price: parseFloat(item.price)
+                }))
+            };
+
+            console.log('📦 Order data ready for submission:', orderData);
+
+            // Store screenshot in sessionStorage for later use if needed
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                // Store screenshot separately (limit to localStorage safe size)
+                try {
+                    sessionStorage.setItem('paymentScreenshot_' + orderNumber, event.target.result);
+                } catch (e) {
+                    console.warn('⚠️ Screenshot too large for sessionStorage:', e);
+                }
+
+                document.getElementById('payment-loader').style.display = 'block';
+
+                const success = await saveOrderToSupabase(orderData);
+                document.getElementById('payment-loader').style.display = 'none';
+
+                if (success) {
+                    // Save order data to localStorage for invoice page
+                    localStorage.setItem('orderData', JSON.stringify(orderData));
+                    sessionStorage.setItem('orderData', JSON.stringify(orderData));
+                    sessionStorage.setItem('orderId', orderNumber);
+                    console.log('✅ Order data saved to localStorage for invoice');
+                    console.log('📋 Saved orderData:', orderData);
+                    
+                    showSuccessMessage(orderNumber);
+                    sessionStorage.removeItem('cartItems');
+                    sessionStorage.removeItem('totalAmount');
+
+                    setTimeout(() => {
+                        window.location.href = 'invoice.html';
+                    }, 3000);
+                } else {
+                    alert('⚠️ Error saving order. Please try again.');
+                }
+            };
+            reader.readAsDataURL(screenshot);
+        }
+
+        async function saveOrderToSupabase(orderData) {
+            try {
+                console.log('🚀 saveOrderToSupabase called');
+                console.log('📊 Order data:', orderData);
+                console.log('🔗 Supabase client status:', supabaseClient ? 'Available' : 'NOT AVAILABLE');
+                
+                if (!supabaseClient) {
+                    console.warn('⚠️ Supabase not initialized, saving locally');
+                    localStorage.setItem('pendingOrder_' + orderData.order_number, JSON.stringify(orderData));
+                    return true;
+                }
+
+                console.log('💾 Saving order to Supabase:', orderData.order_number);
+
+                // Upload screenshot first if it exists
+                let screenshotUrl = null;
+                const screenshotFile = document.getElementById('transaction-screenshot').files[0];
+                
+                if (screenshotFile) {
+                    try {
+                        const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}_${screenshotFile.name}`;
+                        console.log('📸 Uploading screenshot:', fileName);
+                        console.log('📦 File size:', screenshotFile.size, 'bytes');
+                        
+                        const { data: uploadData, error: uploadError } = await supabaseClient
+                            .storage
+                            .from('transaction-screenshots')
+                            .upload(`screenshots/${fileName}`, screenshotFile, {
+                                cacheControl: '3600',
+                                upsert: false
+                            });
+
+                        if (uploadError) {
+                            console.error('❌ Screenshot upload failed:', uploadError);
+                            console.error('Error message:', uploadError.message);
+                            console.error('Error status:', uploadError.status);
+                        } else {
+                            console.log('✅ Screenshot uploaded successfully');
+                            console.log('Upload data:', uploadData);
+                            // Get public URL
+                            const { data: publicUrlData } = supabaseClient
+                                .storage
+                                .from('transaction-screenshots')
+                                .getPublicUrl(`screenshots/${fileName}`);
+                            screenshotUrl = publicUrlData.publicUrl;
+                            console.log('🔗 Screenshot URL:', screenshotUrl);
+                        }
+                    } catch (uploadErr) {
+                        console.error('⚠️ Error uploading screenshot:', uploadErr);
+                        console.error('Error details:', uploadErr.message);
+                    }
+                } else {
+                    console.warn('⚠️ No screenshot file selected');
+                }
+
+                // Prepare order data with proper type conversion
+                const orderToInsert = {
+                    order_number: String(orderData.order_number).trim(),
+                    customer_name: String(orderData.customer_name).trim(),
+                    customer_email: String(orderData.customer_email || 'no-email').trim(),
+                    customer_phone: String(orderData.customer_phone).trim(),
+                    delivery_address: String(orderData.delivery_address).trim(),
+                    delivery_date: orderData.delivery_date, // Already ISO string from date input
+                    delivery_notes: String(orderData.delivery_notes || '').trim(),
+                    subtotal: parseFloat(orderData.subtotal) || parseFloat(orderData.total_amount - 50),
+                    delivery_charge: parseFloat(orderData.delivery_charge) || 50,
+                    total_amount: parseFloat(orderData.total_amount),
+                    status: 'pending_verification',
+                    payment_method: String(orderData.payment_method).toLowerCase().trim(),
+                    transaction_code: String(orderData.transaction_code).trim(),
+                    screenshot_url: screenshotUrl || null,
+                    has_screenshot: screenshotUrl ? true : false
+                };
+
+                console.log('📝 Order data prepared:', orderToInsert);
+                console.log('📊 Data types:', {
+                    order_number: typeof orderToInsert.order_number,
+                    total_amount: typeof orderToInsert.total_amount,
+                    subtotal: typeof orderToInsert.subtotal,
+                    delivery_charge: typeof orderToInsert.delivery_charge,
+                    status: typeof orderToInsert.status
+                });
+
+                // Set timeout for insert operation (10 seconds)
+                const insertTimeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Database operation timeout')), 10000)
+                );
+
+                try {
+                    // Insert order with timeout
+                    const insertPromise = supabaseClient
+                        .from('orders')
+                        .insert([orderToInsert]);
+
+                    const { data: insertResult, error: orderError } = await Promise.race([
+                        insertPromise,
+                        insertTimeoutPromise
+                    ]);
+
+                    if (orderError) {
+                        console.error('❌ Order insert failed:');
+                        console.error('   Message:', orderError.message);
+                        console.error('   Details:', orderError.details);
+                        console.error('   Hint:', orderError.hint);
+                        console.error('   Code:', orderError.code);
+                        console.error('📋 Data sent:', orderToInsert);
+                        
+                        // Still save locally if database fails
+                        localStorage.setItem('pendingOrder_' + orderData.order_number, JSON.stringify(orderData));
+                        console.log('✅ Order saved to local storage as backup');
+                        return true;
+                    }
+
+                    console.log('✅ Order inserted successfully');
+
+                    // Get the inserted order ID with timeout
+                    const selectTimeoutPromise = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Select timeout')), 5000)
+                    );
+
+                    const selectPromise = supabaseClient
+                        .from('orders')
+                        .select('id')
+                        .eq('order_number', orderData.order_number)
+                        .limit(1);
+
+                    const { data: orders, error: selectError } = await Promise.race([
+                        selectPromise,
+                        selectTimeoutPromise
+                    ]);
+
+                    if (selectError || !orders || orders.length === 0) {
+                        console.warn('⚠️ Could not retrieve order ID, but order was created');
+                        return true;
+                    }
+
+                    const orderId = orders[0].id;
+                    console.log('📋 Order ID:', orderId);
+
+                    // Insert order items if they exist
+                    if (orderData.items && orderData.items.length > 0) {
+                        const orderItems = orderData.items.map(item => ({
+                            order_id: parseInt(orderId),
+                            product_id: item.product_id ? parseInt(item.product_id) : null,
+                            product_name: String(item.product_name).trim(),
+                            quantity: parseInt(item.quantity) || 1,
+                            price: parseFloat(item.price) || 0
+                        }));
+
+                        console.log('🛒 Inserting order items:', orderItems);
+
+                        const itemsTimeoutPromise = new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Items insert timeout')), 5000)
+                        );
+
+                        const itemsInsertPromise = supabaseClient
+                            .from('order_items')
+                            .insert(orderItems);
+
+                        const { error: itemsError } = await Promise.race([
+                            itemsInsertPromise,
+                            itemsTimeoutPromise
+                        ]);
+
+                        if (itemsError) {
+                            console.warn('⚠️ Items insert failed, but order created:', itemsError.message);
+                        } else {
+                            console.log('✅ Items inserted successfully');
+                        }
+                    }
+
+                    console.log('🎉 Order process completed successfully');
+                    return true;
+                } catch (timeoutError) {
+                    console.warn('⚠️ Database operation timed out:', timeoutError.message);
+                    console.warn('Saving locally as backup...');
+                    localStorage.setItem('pendingOrder_' + orderData.order_number, JSON.stringify(orderData));
+                    return true;
+                }
+
+            } catch (error) {
+                console.error('❌ Unexpected error in saveOrderToSupabase:', error);
+                console.error('Error details:', error.message);
+                // Save locally as final fallback
+                localStorage.setItem('pendingOrder_' + orderData.order_number, JSON.stringify(orderData));
+                return true;
+            }
+        }
+
+        function showSuccessMessage(orderId) {
+            document.getElementById('modal-order-number').textContent = orderId;
+            document.getElementById('success-modal').style.display = 'flex';
+        }
+
+        window.addEventListener('load', initializePage);
+    </script>
+</body>
+</html>

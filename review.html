@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Review - Nepo Online stores</title>
+    <link rel="icon" type="image/png" href="uploads/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .review-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .review-header h1 {
+            color: #1a1a2e;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .review-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #1a1a2e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff6b8b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            font-size: 28px;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+            transform: scale(1.2);
+        }
+
+        .rating-value {
+            color: #666;
+            font-size: 14px;
+            min-width: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b8b 0%, #ff8fab 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 139, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #ff6b8b;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link a:hover {
+            gap: 12px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .error-message i {
+            margin-right: 8px;
+        }
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .review-container {
+                padding: 25px;
+            }
+
+            .review-header h1 {
+                font-size: 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .star-rating {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="uploads/logo.png" alt="Nepo Online stores Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>Nepo Online stores</h1>
+                    <p>& Cosmetic Center</p>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="orders.html">Order</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="review-container">
+        <div class="review-header">
+            <h1>⭐ Share Your Experience</h1>
+            <p>Help other customers discover the quality of our services</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Thank you! Your review has been submitted successfully.
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="reviewForm">
+            <input type="hidden" id="productId" name="productId" value="0">
+            <!-- Review Title -->
+            <div class="form-group">
+                <label for="reviewTitle">Review Title</label>
+                <input type="text" id="reviewTitle" name="reviewTitle" class="form-control" required placeholder="Title of your review">
+            </div>
+            <!-- Customer Name -->
+            <div class="form-group">
+                <label for="customerName">Your Name *</label>
+                <input type="text" id="customerName" name="customerName" placeholder="Enter your name" required>
+            </div>
+
+            <!-- Email (Optional) -->
+            <div class="form-group">
+                <label for="customerEmail">Email Address *</label>
+                <input type="email" id="customerEmail" name="customerEmail" placeholder="Enter your email" required>
+            </div>
+
+            <!-- Rating -->
+            <div class="form-group">
+                <label>Rate Your Experience *</label>
+                <div class="rating-section">
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <div class="rating-value" id="ratingValue">Select rating</div>
+                </div>
+                <input type="hidden" id="rating" name="rating" required>
+            </div>
+
+            <!-- Review Text -->
+            <div class="form-group">
+                <label for="reviewText">Your Review *</label>
+                <textarea id="reviewText" name="reviewText" placeholder="Share your experience with our services and products..." required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Submit Review
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="index.html#products">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script src="supabase-new.js"></script>
+    <script>
+        // Wait for Supabase to initialize before allowing form submission
+        let supabaseReady = false;
+        const maxWaitTime = 5000; // 5 seconds max wait
+        const startTime = Date.now();
+
+        function checkSupabaseReady() {
+            if (window.supabaseClient) {
+                supabaseReady = true;
+                console.log('✅ Supabase client is ready for review submission');
+                return true;
+            }
+            
+            if (Date.now() - startTime < maxWaitTime) {
+                setTimeout(checkSupabaseReady, 100);
+                return false;
+            }
+            
+            console.warn('⚠️ Supabase client not ready after waiting');
+            return false;
+        }
+
+        // Start checking
+        checkSupabaseReady();
+
+        let selectedRating = 0;
+
+        // Star Rating System
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = star.dataset.rating;
+                document.getElementById('rating').value = selectedRating;
+                updateStarDisplay(selectedRating);
+                updateRatingValue(selectedRating);
+            });
+
+            star.addEventListener('mouseover', () => {
+                updateStarDisplay(star.dataset.rating);
+            });
+        });
+
+        const starRating = document.getElementById('starRating');
+        starRating.addEventListener('mouseout', () => {
+            updateStarDisplay(selectedRating);
+        });
+
+        function updateStarDisplay(rating) {
+            stars.forEach(star => {
+                if (star.dataset.rating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateRatingValue(rating) {
+            const ratingText = {
+                1: 'Poor',
+                2: 'Fair',
+                3: 'Good',
+                4: 'Very Good',
+                5: 'Excellent'
+            };
+            document.getElementById('ratingValue').textContent = ratingText[rating] || 'Select rating';
+        }
+
+        // Form Submission
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedRating) {
+                showError('Please select a rating');
+                return;
+            }
+
+            // Wait for Supabase client to be ready
+            let waitCounter = 0;
+            while (!window.supabaseClient && waitCounter < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                waitCounter++;
+            }
+
+            if (!window.supabaseClient) {
+                showError('Database service is loading. Please wait a moment and try again.');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                // Validate form fields
+                const customerName = document.getElementById('customerName').value.trim();
+                const customerEmail = document.getElementById('customerEmail').value.trim();
+                const reviewTitle = document.getElementById('reviewTitle').value.trim();
+                const reviewText = document.getElementById('reviewText').value.trim();
+
+                if (!customerName) {
+                    throw new Error('Customer name is required');
+                }
+
+                if (!reviewTitle) {
+                    throw new Error('Review title is required');
+                }
+
+                if (!reviewText) {
+                    throw new Error('Review text is required');
+                }
+
+                if (!customerEmail) {
+                    throw new Error('Email is required');
+                }
+
+                if (!isValidEmail(customerEmail)) {
+                    throw new Error('Please enter a valid email address');
+                }
+
+                const productIdValue = document.getElementById('productId').value;
+                const productId = productIdValue && productIdValue !== '0' ? parseInt(productIdValue) : null;
+
+                // Email is now required, so we always have a value
+                const reviewData = {
+                    customer_name: customerName,
+                    customer_email: customerEmail,
+                    review_title: reviewTitle,
+                    rating: parseInt(selectedRating),
+                    review_text: reviewText,
+                    product_id: productId,
+                    status: 'pending'
+                };
+
+                console.log('📝 Submitting review:', reviewData);
+
+                // Insert review into Supabase with retry logic
+                const client = window.supabaseClient;
+                if (!client) {
+                    throw new Error('Database connection failed. Please refresh the page and try again.');
+                }
+                
+                let lastError = null;
+                let retryCount = 0;
+                const maxRetries = 2;
+
+                while (retryCount <= maxRetries) {
+                    try {
+                        const { data, error } = await client
+                            .from('reviews')
+                            .insert([reviewData])
+                            .select();
+
+                        if (error) {
+                            lastError = error;
+                            console.error(`Attempt ${retryCount + 1} - Supabase error:`, error);
+                            
+                            if (retryCount < maxRetries) {
+                                await new Promise(resolve => setTimeout(resolve, 500));
+                                retryCount++;
+                                continue;
+                            }
+                        } else {
+                            if (!data || data.length === 0) {
+                                throw new Error('Review was not saved. Please try again.');
+                            }
+
+                            console.log('✅ Review submitted successfully:', data);
+                            showSuccess();
+                            document.getElementById('reviewForm').reset();
+                            selectedRating = 0;
+                            updateStarDisplay(0);
+                            updateRatingValue(0);
+
+                            // Redirect after 2 seconds
+                            setTimeout(() => {
+                                window.location.href = 'index.html#products';
+                            }, 2000);
+                            return;
+                        }
+                    } catch (err) {
+                        lastError = err;
+                        console.error(`Attempt ${retryCount + 1} - Error:`, err);
+                        if (retryCount < maxRetries) {
+                            await new Promise(resolve => setTimeout(resolve, 500));
+                            retryCount++;
+                            continue;
+                        }
+                    }
+                }
+
+                // All retries failed
+                if (lastError) {
+                    const errorMsg = lastError.message || lastError.details?.message || 'Failed to submit review';
+                    if (errorMsg.includes('duplicate') || errorMsg.includes('constraint')) {
+                        throw new Error('This review appears to be a duplicate. Please check your previous submissions.');
+                    } else if (errorMsg.includes('permission') || errorMsg.includes('policy')) {
+                        throw new Error('You do not have permission to submit reviews. Please contact support.');
+                    } else {
+                        throw new Error(errorMsg);
+                    }
+                } else {
+                    throw new Error('Unable to submit review. Please check your connection and try again.');
+                }
+
+            } catch (error) {
+                console.error('❌ Error submitting review:', error);
+                const errorMsg = error.message || 'Failed to submit review. Please try again.';
+                showError(errorMsg);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! Your review has been submitted successfully.';
+            successMsg.style.display = 'block';
+            successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorMsg.style.display = 'block';
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+
+    <!-- WhatsApp Chat Button -->
+    <style>
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            border: none;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-btn::before {
+            content: 'Chat';
+            position: absolute;
+            left: 65px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover::before {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-btn {
+                bottom: 20px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .whatsapp-btn::before {
+                left: 60px;
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .whatsapp-btn {
+                bottom: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .whatsapp-btn::before {
+                left: 50px;
+                font-size: 9px;
+                padding: 5px 8px;
+                border-radius: 12px;
+            }
+        }
+    </style>
+
+    <a href="https://wa.me/977033590207?text=Hello!%20I%20would%20like%20to%20chat%20with%20you%20about%20our%20beauty%20services." 
+       class="whatsapp-btn" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</body>
+</html>

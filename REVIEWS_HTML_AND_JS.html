@@ -1,0 +1,785 @@
+<!-- REVIEWS SECTION - Add this to product-details.html -->
+<!-- Include this section in the product details modal/page -->
+
+<!-- Required Scripts for Reviews -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
+
+<style>
+    /* Reviews Styling */
+    .reviews-section {
+        margin-top: 40px;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+    }
+
+    .reviews-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .reviews-header h3 {
+        font-size: 24px;
+        color: #333;
+        margin: 0;
+    }
+
+    .rating-summary {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .rating-display {
+        text-align: center;
+    }
+
+    .rating-number {
+        font-size: 36px;
+        font-weight: bold;
+        color: #ff6b8b;
+    }
+
+    .rating-stars {
+        color: #ffc107;
+        font-size: 18px;
+        margin-top: 5px;
+    }
+
+    .rating-count {
+        color: #666;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .rating-breakdown {
+        flex: 1;
+    }
+
+    .rating-bar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .rating-bar-item span:first-child {
+        width: 30px;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .rating-bar {
+        flex: 1;
+        height: 8px;
+        background-color: #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .rating-bar-fill {
+        height: 100%;
+        background-color: #ffc107;
+        border-radius: 4px;
+    }
+
+    .rating-bar-count {
+        width: 50px;
+        text-align: right;
+        color: #666;
+        font-size: 12px;
+    }
+
+    /* Review Form */
+    .write-review-btn {
+        background-color: #ff6b8b;
+        color: white;
+        padding: 10px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+    .write-review-btn:hover {
+        background-color: #ff5078;
+    }
+
+    .review-form-container {
+        background-color: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 2px solid #ff6b8b;
+        display: none; /* Initially hidden */
+    }
+
+    .review-form-container.active {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #ff6b8b;
+        box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.1);
+    }
+
+    .rating-input-group {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .star-rating .star {
+        font-size: 32px;
+        cursor: pointer;
+        color: #ddd;
+        transition: color 0.2s;
+    }
+
+    .star-rating .star:hover,
+    .star-rating .star.selected {
+        color: #ffc107;
+    }
+
+    .form-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .btn-submit {
+        background-color: #ff6b8b;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+    .btn-submit:hover {
+        background-color: #ff5078;
+    }
+
+    .btn-submit:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .btn-cancel {
+        background-color: #ddd;
+        color: #333;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background-color: #bbb;
+    }
+
+    /* Reviews List */
+    .reviews-list {
+        margin-top: 30px;
+    }
+
+    .review-item {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #ff6b8b;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .review-customer {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .review-date {
+        color: #999;
+        font-size: 13px;
+    }
+
+    .review-rating {
+        display: flex;
+        gap: 5px;
+        color: #ffc107;
+        margin-bottom: 8px;
+    }
+
+    .review-title {
+        font-weight: 600;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .review-text {
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    .review-verified {
+        display: inline-block;
+        background-color: #d4edda;
+        color: #155724;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .helpful-btn {
+        background-color: transparent;
+        border: 1px solid #ddd;
+        padding: 6px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #666;
+        font-size: 13px;
+        transition: all 0.3s;
+    }
+
+    .helpful-btn:hover {
+        border-color: #ff6b8b;
+        color: #ff6b8b;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+    }
+
+    .no-reviews p {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    /* Loading state */
+    .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+    }
+
+    .loading::after {
+        content: '';
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+        0%, 20% { content: ''; }
+        40% { content: '.'; }
+        60% { content: '..'; }
+        80%, 100% { content: '...'; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .reviews-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .rating-summary {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .rating-breakdown {
+            width: 100%;
+        }
+
+        .form-buttons {
+            flex-direction: column-reverse;
+        }
+
+        .btn-submit, .btn-cancel {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- HTML Structure -->
+<div class="reviews-section" id="reviewsSection">
+    <!-- Reviews Header with Rating Summary -->
+    <div class="reviews-header">
+        <div>
+            <h3>Customer Reviews</h3>
+        </div>
+        <button class="write-review-btn" onclick="toggleReviewForm()">✍️ Write a Review</button>
+    </div>
+
+    <!-- Rating Summary -->
+    <div id="ratingSummary" class="rating-summary" style="display: none;">
+        <div class="rating-display">
+            <div class="rating-number" id="averageRating">0</div>
+            <div class="rating-stars" id="averageStars">★★★★★</div>
+            <div class="rating-count" id="reviewCount">0 reviews</div>
+        </div>
+
+        <div class="rating-breakdown">
+            <div class="rating-bar-item">
+                <span>5★</span>
+                <div class="rating-bar"><div class="rating-bar-fill" id="bar5" style="width: 0%"></div></div>
+                <span class="rating-bar-count" id="count5">0</span>
+            </div>
+            <div class="rating-bar-item">
+                <span>4★</span>
+                <div class="rating-bar"><div class="rating-bar-fill" id="bar4" style="width: 0%"></div></div>
+                <span class="rating-bar-count" id="count4">0</span>
+            </div>
+            <div class="rating-bar-item">
+                <span>3★</span>
+                <div class="rating-bar"><div class="rating-bar-fill" id="bar3" style="width: 0%"></div></div>
+                <span class="rating-bar-count" id="count3">0</span>
+            </div>
+            <div class="rating-bar-item">
+                <span>2★</span>
+                <div class="rating-bar"><div class="rating-bar-fill" id="bar2" style="width: 0%"></div></div>
+                <span class="rating-bar-count" id="count2">0</span>
+            </div>
+            <div class="rating-bar-item">
+                <span>1★</span>
+                <div class="rating-bar"><div class="rating-bar-fill" id="bar1" style="width: 0%"></div></div>
+                <span class="rating-bar-count" id="count1">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Form (Initially Hidden) -->
+    <div class="review-form-container" id="reviewForm">
+        <h4>Share Your Review</h4>
+        <p style="color: #666; margin-bottom: 20px;">Your feedback helps other customers make informed decisions.</p>
+
+        <form id="reviewFormElement" onsubmit="submitReviewHandler(event)">
+            <!-- Rating Selection -->
+            <div class="form-group">
+                <label for="reviewRating">Rating *</label>
+                <div class="star-rating" id="starRating">
+                    <span class="star" data-rating="5">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="1">★</span>
+                </div>
+                <input type="hidden" id="reviewRating" name="rating" required>
+            </div>
+
+            <!-- Review Title -->
+            <div class="form-group">
+                <label for="reviewTitle">Review Title *</label>
+                <input type="text" id="reviewTitle" name="title" placeholder="e.g., Excellent product!" required>
+            </div>
+
+            <!-- Review Text -->
+            <div class="form-group">
+                <label for="reviewText">Your Review *</label>
+                <textarea id="reviewText" name="text" placeholder="Share your experience with this product..." required></textarea>
+            </div>
+
+            <!-- Customer Name -->
+            <div class="form-group">
+                <label for="customerName">Your Name *</label>
+                <input type="text" id="customerName" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <!-- Customer Email -->
+            <div class="form-group">
+                <label for="customerEmail">Your Email *</label>
+                <input type="email" id="customerEmail" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <!-- Verified Purchase Checkbox -->
+            <div class="form-group" style="display: flex; align-items: center; margin-bottom: 20px;">
+                <input type="checkbox" id="verifiedPurchase" name="verified" style="width: auto; margin-right: 10px;">
+                <label for="verifiedPurchase" style="margin-bottom: 0;">This is a verified purchase</label>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="form-buttons">
+                <button type="button" class="btn-cancel" onclick="toggleReviewForm()">Cancel</button>
+                <button type="submit" class="btn-submit" id="submitReviewBtn">Submit Review</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Reviews List -->
+    <div class="reviews-list" id="reviewsList">
+        <div class="loading">Loading reviews...</div>
+    </div>
+</div>
+
+<!-- JavaScript for Reviews Functionality -->
+<script>
+let currentProductId = null;
+let selectedRating = 0;
+
+// Initialize reviews section
+function initializeReviews(productId) {
+    currentProductId = productId;
+    loadReviews();
+    loadReviewStats();
+}
+
+// Toggle review form visibility
+function toggleReviewForm() {
+    const form = document.getElementById('reviewForm');
+    form.classList.toggle('active');
+    
+    if (form.classList.contains('active')) {
+        // Scroll to form
+        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('customerName').focus();
+    } else {
+        // Reset form
+        document.getElementById('reviewFormElement').reset();
+        selectedRating = 0;
+        updateStarDisplay();
+    }
+}
+
+// Handle star rating selection
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star-rating .star');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            selectedRating = this.dataset.rating;
+            document.getElementById('reviewRating').value = selectedRating;
+            updateStarDisplay();
+        });
+
+        star.addEventListener('mouseover', function() {
+            const hoverRating = this.dataset.rating;
+            stars.forEach(s => {
+                s.style.color = s.dataset.rating >= hoverRating ? '#ffc107' : '#ddd';
+            });
+        });
+    });
+
+    document.getElementById('starRating').addEventListener('mouseout', updateStarDisplay);
+});
+
+function updateStarDisplay() {
+    const stars = document.querySelectorAll('.star-rating .star');
+    stars.forEach(star => {
+        star.classList.remove('selected');
+        if (selectedRating && star.dataset.rating >= selectedRating) {
+            star.style.color = '#ffc107';
+            if (star.dataset.rating == selectedRating) {
+                star.classList.add('selected');
+            }
+        } else {
+            star.style.color = selectedRating && star.dataset.rating > selectedRating ? '#ddd' : '#ffc107';
+        }
+    });
+}
+
+// Load and display reviews
+async function loadReviews() {
+    if (!currentProductId) return;
+
+    const reviewsList = document.getElementById('reviewsList');
+    reviewsList.innerHTML = '<div class="loading">Loading reviews</div>';
+
+    try {
+        const reviews = await fetchProductReviews(currentProductId);
+
+        if (reviews.length === 0) {
+            reviewsList.innerHTML = '<div class="no-reviews"><p>No reviews yet. Be the first to review!</p></div>';
+            return;
+        }
+
+        reviewsList.innerHTML = reviews.map(review => `
+            <div class="review-item">
+                <div class="review-header">
+                    <div>
+                        <div class="review-customer">${escapeHtml(review.customer_name)}</div>
+                        <div class="review-date">${new Date(review.created_at).toLocaleDateString()}</div>
+                    </div>
+                </div>
+                
+                <div class="review-rating">
+                    ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                </div>
+
+                ${review.is_verified_purchase ? '<div class="review-verified">✓ Verified Purchase</div>' : ''}
+
+                <div class="review-title">${escapeHtml(review.review_title)}</div>
+                <div class="review-text">${escapeHtml(review.review_text)}</div>
+
+                <div class="review-actions">
+                    <button class="helpful-btn" onclick="markHelpful('${review.id}')">
+                        👍 Helpful (${review.helpful_count || 0})
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        reviewsList.innerHTML = '<div class="no-reviews"><p>Error loading reviews. Please try again.</p></div>';
+    }
+}
+
+// Load and display review statistics
+async function loadReviewStats() {
+    if (!currentProductId) return;
+
+    try {
+        const stats = await getProductReviewStats(currentProductId);
+
+        if (!stats || stats.totalReviews === 0) {
+            document.getElementById('ratingSummary').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('ratingSummary').style.display = 'flex';
+        document.getElementById('averageRating').textContent = stats.averageRating.toFixed(1);
+        document.getElementById('averageStars').textContent = '★'.repeat(Math.round(stats.averageRating)) + '☆'.repeat(5 - Math.round(stats.averageRating));
+        document.getElementById('reviewCount').textContent = `${stats.totalReviews} review${stats.totalReviews !== 1 ? 's' : ''}`;
+
+        // Update rating breakdown
+        for (let i = 5; i >= 1; i--) {
+            const count = stats.ratingBreakdown[i];
+            const percentage = stats.totalReviews > 0 ? (count / stats.totalReviews) * 100 : 0;
+            document.getElementById(`count${i}`).textContent = count;
+            document.getElementById(`bar${i}`).style.width = percentage + '%';
+        }
+    } catch (error) {
+        console.error('Error loading review stats:', error);
+    }
+}
+
+// Submit review form
+async function submitReviewHandler(event) {
+    event.preventDefault();
+
+    if (!selectedRating) {
+        showNotification('Please select a rating', 'error');
+        return;
+    }
+
+    if (!currentProductId) {
+        showNotification('Product ID not loaded. Please reload the page.', 'error');
+        console.error('currentProductId is null. Make sure initializeReviews(productId) was called.');
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitReviewBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+        const reviewData = {
+            product_id: currentProductId,
+            customer_name: document.getElementById('customerName').value,
+            customer_email: document.getElementById('customerEmail').value,
+            rating: selectedRating,
+            review_title: document.getElementById('reviewTitle').value,
+            review_text: document.getElementById('reviewText').value,
+            is_verified_purchase: document.getElementById('verifiedPurchase').checked
+        };
+
+        console.log('Submitting review:', reviewData);
+
+        const result = await submitReview(reviewData);
+
+        if (result.success) {
+            showNotification(result.message, 'success');
+            document.getElementById('reviewFormElement').reset();
+            selectedRating = 0;
+            updateStarDisplay();
+            toggleReviewForm();
+            loadReviews();
+            loadReviewStats();
+        } else {
+            showNotification(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        showNotification('Error submitting review: ' + error.message, 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Review';
+    }
+}
+
+// Mark review as helpful
+async function markHelpful(reviewId) {
+    try {
+        const result = await markReviewHelpful(reviewId, 'anonymous-user@example.com');
+        
+        if (result.success) {
+            showNotification(result.message, 'success');
+            loadReviews(); // Reload to show updated helpful count
+        } else {
+            showNotification(result.message, 'info');
+        }
+    } catch (error) {
+        console.error('Error marking helpful:', error);
+    }
+}
+
+// Utility: Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Utility: Show notification (use your existing notification function or this simple one)
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        background-color: ${type === 'success' ? '#d4edda' : type === 'error' ? '#f8d7da' : '#d1ecf1'};
+        color: ${type === 'success' ? '#155724' : type === 'error' ? '#721c24' : '#0c5460'};
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+</script>
+
+<!-- Include Supabase functions for review system (MUST load before initialization) -->
+<script src="supabase-new.js"></script>
+
+<script>
+// Auto-initialize reviews section when page loads
+// In production, this should be called from product-details.html with the actual product ID
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if productId is passed via URL parameter or data attribute
+    const urlParams = new URLSearchParams(window.location.search);
+    const productIdParam = urlParams.get('productId');
+    
+    if (productIdParam) {
+        // Use product ID from URL parameter
+        initializeReviews(parseInt(productIdParam));
+        console.log('✅ Reviews initialized with product ID:', productIdParam);
+    } else if (document.body.dataset.productId) {
+        // Use product ID from data attribute
+        initializeReviews(parseInt(document.body.dataset.productId));
+        console.log('✅ Reviews initialized with product ID:', document.body.dataset.productId);
+    } else {
+        // Fallback: Use first product ID for testing
+        // In production, this should be set properly from your product page
+        console.warn('⚠️ No product ID found. Using product ID 1 for testing.');
+        console.log('To set product ID, either:');
+        console.log('1. Add ?productId=123 to the URL');
+        console.log('2. Add data-product-id="123" to the body tag');
+        console.log('3. Call initializeReviews(123) directly');
+        
+        // For testing, try to initialize with first product
+        initializeReviews(1);
+    }
+});
+
+// Wait for Supabase library and supabase-new.js to be ready
+function waitForSupabase() {
+    if (window.supabase && window.supabaseClient) {
+        console.log('✅ Supabase ready, can now submit reviews');
+        return true;
+    }
+    if (window.supabase && !window.supabaseClient) {
+        // Trigger initialization
+        if (typeof initializeSupabase === 'function') {
+            console.log('⏳ Initializing Supabase...');
+            initializeSupabase();
+            return true;
+        }
+    }
+    return false;
+}
+
+// Check every 100ms until Supabase is ready (max 10 seconds)
+let attempts = 0;
+const checkInterval = setInterval(() => {
+    attempts++;
+    if (waitForSupabase()) {
+        clearInterval(checkInterval);
+        console.log('✅ Supabase initialization complete after ' + attempts + ' attempts');
+    } else if (attempts > 100) {
+        clearInterval(checkInterval);
+        console.error('❌ Failed to initialize Supabase after 10 seconds');
+        console.error('window.supabase:', typeof window.supabase);
+        console.error('window.supabaseClient:', typeof window.supabaseClient);
+        console.error('initializeSupabase function:', typeof initializeSupabase);
+    }
+}, 100);
+</script>

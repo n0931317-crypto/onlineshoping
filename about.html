@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Nepo Online stores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* About Us Page Styles */
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .about-hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .about-hero p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .about-owner-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .owner-photo-container {
+            text-align: center;
+        }
+
+        .owner-photo {
+            width: 100%;
+            max-width: 400px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 5px solid #ff1493;
+        }
+
+        .owner-info h2 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .owner-title {
+            font-size: 1.3em;
+            color: #ff1493;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .owner-description {
+            font-size: 1em;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .owner-highlights {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+
+        .owner-highlights li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .owner-highlights li:before {
+            content: "✓";
+            color: #ff1493;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-right: 15px;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            background: #f8f9ff;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 80px;
+        }
+
+        .mission-section h3 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .mission-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .mission-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .mission-card i {
+            font-size: 2.5em;
+            color: #ff1493;
+            margin-bottom: 15px;
+        }
+
+        .mission-card h4 {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .mission-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Services Highlight */
+        .services-highlight {
+            margin-bottom: 80px;
+        }
+
+        .services-highlight h3 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: scale(1.05);
+        }
+
+        .service-card i {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .service-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* Why Choose Us */
+        .why-choose {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            margin-bottom: 80px;
+            border-left: 5px solid #ff1493;
+        }
+
+        .why-choose h3 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .reasons-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .reason-item {
+            display: flex;
+            gap: 20px;
+        }
+
+        .reason-icon {
+            font-size: 2em;
+            color: #ff1493;
+            min-width: 40px;
+        }
+
+        .reason-content h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .reason-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .contact-cta h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .contact-cta p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Video Section Styles */
+        .video-showcase {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 40px;
+            border-radius: 20px;
+            margin: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .video-showcase h3 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-container-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-frame {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 16 / 9;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: black;
+            animation: frameGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes frameGlow {
+            0%, 100% {
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                            0 0 30px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                            0 0 50px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .video-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 3px solid;
+            border-image: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%) 1;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .video-frame::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .video-frame iframe,
+        .video-frame video,
+        .video-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+            font-size: 1.2em;
+            gap: 15px;
+        }
+
+        .video-placeholder i {
+            font-size: 3em;
+            opacity: 0.6;
+        }
+
+        .video-description {
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .video-showcase {
+                padding: 60px 20px;
+                margin: 60px 0;
+            }
+
+            .video-showcase h3 {
+                font-size: 1.8em;
+                margin-bottom: 30px;
+            }
+
+            .video-frame {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 768px) {
+            .about-owner-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .about-hero h1 {
+                font-size: 2em;
+            }
+
+            .owner-info h2 {
+                font-size: 1.8em;
+            }
+
+            .mission-section h3,
+            .services-highlight h3,
+            .why-choose h3,
+            .contact-cta h3 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Navigation adjustments */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-menu">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>Nepo Online stores</span>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#products">Products</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>About Nepo Online stores</h1>
+        <p>Premium fabrics and tailoring expertise. Discover our journey and the passion behind every collection.</p>
+    </section>
+
+    <!-- Main Content -->
+    <div class="about-container">
+        <!-- Owner Section -->
+        <section class="about-owner-section">
+            <div class="owner-photo-container">
+                <img src="uploads/logo.png" alt="Nepo Online stores Logo" class="owner-photo" style="width: 150px; height: auto;">
+            </div>
+            <div class="owner-info">
+                <h2>Nepo Online stores</h2>
+                <p class="owner-title">Premium Fashion & Tailoring</p>
+                <p class="owner-description">
+                    Welcome to Nepo Online stores! We are a premier fashion and tailoring destination dedicated to bringing you the finest collection of fabrics and custom tailoring services. With years of experience in the fashion and textile industry, we've dedicated ourselves to delivering exceptional quality and personalized service to every client.
+                </p>
+                <p class="owner-description">
+                    What started as a passion for quality fabrics and craftsmanship has evolved into a professional boutique that serves hundreds of satisfied customers every month. Our commitment to premium quality, customer satisfaction, and expert tailoring has made Nepo Online stores a trusted name in the fashion industry.
+                </p>
+                <ul class="owner-highlights">
+                    <li>Years of fashion and tailoring expertise</li>
+                    <li>Premium quality fabrics from trusted suppliers</li>
+                    <li>Expert tailoring and custom design services</li>
+                    <li>Passionate about customer satisfaction</li>
+                    <li>Continuous innovation in fashion trends</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <h3>Our Core Values</h3>
+            <div class="mission-grid">
+                <div class="mission-card">
+                    <i class="fas fa-heart"></i>
+                    <h4>Quality</h4>
+                    <p>We use only premium beauty products and techniques to ensure the best results for our clients.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-smile"></i>
+                    <h4>Customer First</h4>
+                    <p>Your satisfaction is our priority. We listen, understand your needs, and deliver beyond expectations.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-star"></i>
+                    <h4>Excellence</h4>
+                    <p>We strive for perfection in every service, every day, and with every client that walks through our doors.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-leaf"></i>
+                    <h4>Hygiene & Safety</h4>
+                    <p>We maintain the highest standards of cleanliness and use sterilized equipment for your safety.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-rocket"></i>
+                    <h4>Innovation</h4>
+                    <p>We stay updated with the latest beauty trends and techniques to offer modern services.</p>
+                </div>
+                <div class="mission-card">
+                    <i class="fas fa-handshake"></i>
+                    <h4>Integrity</h4>
+                    <p>We believe in honest dealings and transparent communication with all our clients.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Showcase Section -->
+        <section class="video-showcase">
+            <h3>🎬 Our Story in Motion</h3>
+            <div class="video-container-wrapper">
+                <div class="video-frame" id="featured-video-frame">
+                    <div class="video-placeholder">
+                        <i class="fas fa-film"></i>
+                        <span>Featured Video</span>
+                    </div>
+                </div>
+            </div>
+            <p class="video-description">
+                Watch our journey at Nepo Online stores. From passion to profession, 
+                discover how we've been bringing premium fabrics and expert tailoring to our valued customers.
+            </p>
+        </section>
+
+        <!-- Services Highlight -->
+        <section class="services-highlight">
+            <h3>Our Specialty Services</h3>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-makeup"></i>
+                    <h4>Makeup Artistry</h4>
+                    <p>Professional makeup for all occasions - bridal, parties, photoshoots, and everyday looks.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-spa"></i>
+                    <h4>Skincare</h4>
+                    <p>Advanced facial treatments and skincare solutions for healthy, glowing skin.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-scissors"></i>
+                    <h4>Hair Services</h4>
+                    <p>Expert haircuts, styling, coloring, and treatments to keep your hair looking beautiful.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <h4>Beauty Treatments</h4>
+                    <p>Threading, waxing, bleaching, and other beauty treatments for a complete makeover.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-ring"></i>
+                    <h4>Bridal Services</h4>
+                    <p>Complete bridal packages including makeup, hair, skincare prep, and special treatments.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-gift"></i>
+                    <h4>Gift Cards</h4>
+                    <p>Give the gift of beauty. Purchase gift cards for your loved ones.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="why-choose">
+            <h3>Why Choose Nepo Online stores?</h3>
+            <div class="reasons-list">
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Experienced Professionals</h4>
+                        <p>Our team consists of certified beauty experts with years of experience in their respective fields.</p>
+                    </div>
+                </div>
+
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Premium Products</h4>
+                        <p>We use only high-quality, certified beauty products that are safe for all skin types.</p>
+                    </div>
+                </div>
+
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Comfortable Ambiance</h4>
+                        <p>Our parlor is designed to provide a relaxing and comfortable environment for our clients.</p>
+                    </div>
+                </div>
+
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Flexible Appointments</h4>
+                        <p>We offer flexible timings and can accommodate both walk-ins and scheduled appointments.</p>
+                    </div>
+                </div>
+
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Personalized Service</h4>
+                        <p>Every client is unique. We customize our services based on your individual needs and preferences.</p>
+                    </div>
+                </div>
+
+                <div class="reason-item">
+                    <div class="reason-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="reason-content">
+                        <h4>Affordable Pricing</h4>
+                        <p>Premium services at competitive prices. We offer various packages to suit all budgets.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="contact-cta">
+            <h3>Ready to Experience the Manisha Difference?</h3>
+            <p>Book your appointment today and discover why hundreds of clients trust us with their beauty needs.</p>
+            <a href="index.html#contact" class="cta-button">Book Now</a>
+            <a href="index.html#services" class="cta-button">View Services</a>
+        </section>
+    </div>
+
+    <!-- Enhanced Footer with Shipping Policy & Customer Reviews -->
+    <style>
+        /* Enhanced Footer Styles */
+        footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 60px 20px 20px;
+            margin-top: 80px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section {
+            padding: 20px 0;
+        }
+
+        .footer-section h3 {
+            color: #ff6b8b;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ff6b8b;
+            padding-bottom: 10px;
+        }
+
+        .footer-section p {
+            line-height: 1.8;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .footer-section a:hover {
+            color: #ff6b8b;
+            padding-left: 5px;
+        }
+
+        /* Shipping Policy Section */
+        .shipping-policy {
+            background: rgba(255, 107, 139, 0.1);
+            border-left: 4px solid #ff6b8b;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .shipping-policy h4 {
+            color: #ff6b8b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shipping-policy ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .shipping-policy li {
+            color: #ccc;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .shipping-policy li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ff6b8b;
+        }
+
+        /* Customer Reviews Section */
+        .customer-reviews {
+            background: rgba(255, 107, 139, 0.05);
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .customer-reviews h4 {
+            color: #4facfe;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reviews-carousel {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+        }
+
+        .reviews-carousel::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .reviews-carousel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .reviews-carousel::-webkit-scrollbar-thumb {
+            background: #ff6b8b;
+            border-radius: 2px;
+        }
+
+        .review-card {
+            flex: 0 0 220px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 107, 139, 0.2);
+        }
+
+        .review-stars {
+            color: #ffc107;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            color: #ddd;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .review-author {
+            color: #ff6b8b;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Footer Features */
+        .footer-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 107, 139, 0.1);
+            border-radius: 8px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .feature-text strong {
+            color: #ff6b8b;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* Footer Bottom */
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .footer-bottom a {
+            color: #ff6b8b;
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            text-decoration: underline;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 107, 139, 0.2);
+            color: #ff6b8b;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #ff6b8b;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                padding: 40px 15px 15px;
+            }
+
+            .footer-content {
+                gap: 20px;
+            }
+
+            .reviews-carousel {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .review-card {
+                width: 180px;
+            }
+
+            .footer-features {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Key Features -->
+            <div class="footer-features">
+                <div class="feature-item">
+                    <div class="feature-icon">�‍💼</div>
+                    <div class="feature-text">
+                        <strong>Expert Team</strong>
+                        Professional beauty specialists
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-text">
+                        <strong>Secure Payment</strong>
+                        100% secure transactions
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⭐</div>
+                    <div class="feature-text">
+                        <strong>Premium Quality</strong>
+                        Only certified products
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🌿</div>
+                    <div class="feature-text">
+                        <strong>Eco-Friendly</strong>
+                        Sustainable beauty solutions
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Reviews -->
+            <div style="margin-bottom: 40px;">
+                <div class="customer-reviews">
+                    <h4>⭐ Customer Reviews</h4>
+                    <div class="reviews-carousel" id="reviewsCarousel">
+                        <!-- Will be populated by JavaScript -->
+                        <div style="color: #ccc; font-size: 13px; padding: 10px;">Loading reviews...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Footer Content -->
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nepo Online stores</h3>
+                    <p>Premium Fashion & Tailoring</p>
+                    <p>Premium fabrics and expert tailoring services with professional expertise and quality craftsmanship.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/profile.php?id=61580118031654" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/977982314506" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/nepoonline0/" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://youtube.com" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#services">Services</a></li>
+                        <li><a href="index.html#products">Products</a></li>
+                        <li><a href="index.html#gallery">Gallery</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="orders.html">My Orders</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Policies</h3>
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms & Conditions</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>
+                        <i class="fas fa-map-marker-alt" style="color: #ff6b8b; margin-right: 8px;"></i>
+                        Mirchaiya Bazar, Sirha, Nepal
+                    </p>
+                    <p>
+                        <i class="fas fa-phone" style="color: #ff6b8b; margin-right: 8px;"></i>
+                        <a href="tel:+977" style="color: #ccc;">+977</a>
+                    </p>
+                    <p>
+                        <i class="fas fa-envelope" style="color: #ff6b8b; margin-right: 8px;"></i>
+                        <a href="mailto:nepoonline0@gmail.com" style="color: #ccc;">nepoonline0@gmail.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nepo Online stores. All rights reserved.</p>
+                <p>Premium Fashion & Tailoring | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=61580118031654" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://wa.me/977982314506" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/nepoonline0/" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script to load approved customer reviews in footer -->
+    <script>
+    // Load top approved reviews for footer display
+    async function loadFooterReviews() {
+        try {
+            const reviews = await fetchAllReviews('approved');
+            if (!reviews || reviews.length === 0) {
+                document.getElementById('reviewsCarousel').innerHTML = `
+                    <p style="color: #ccc; font-size: 13px;">No customer reviews yet. Be the first to review!</p>
+                `;
+                return;
+            }
+
+            // Show 5 most recent reviews
+            const topReviews = reviews.slice(-5).reverse();
+            
+            const html = topReviews.map(review => `
+                <div class="review-card">
+                    <div class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                    <div class="review-text">"${escapeHtml(review.review_text.substring(0, 80))}${review.review_text.length > 80 ? '...' : ''}"</div>
+                    <div class="review-author">— ${escapeHtml(review.customer_name)}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('reviewsCarousel').innerHTML = html;
+        } catch (error) {
+            console.error('Error loading footer reviews:', error);
+            document.getElementById('reviewsCarousel').innerHTML = `
+                <p style="color: #ccc; font-size: 13px;">Couldn't load reviews at this time</p>
+            `;
+        }
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Load reviews when page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            if (typeof fetchAllReviews === 'function') {
+                loadFooterReviews();
+            }
+        }, 1000);
+    });
+
+    // Refresh reviews every 5 minutes
+    setInterval(loadFooterReviews, 5 * 60 * 1000);
+    </script>
+
+    <script src="supabase-new.js"></script>
+    <script src="script.js"></script>
+    <script src="supabase-new.js"></script>
+    <script>
+        // Load Featured Video
+        async function loadFeaturedVideo() {
+            try {
+                const client = getClient();
+                if (!client) {
+                    setTimeout(loadFeaturedVideo, 500);
+                    return;
+                }
+
+                const { data: video, error } = await client
+                    .from('home_video')
+                    .select('*')
+                    .eq('is_active', true)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Error loading video:', error);
+                    return;
+                }
+
+                if (video) {
+                    const frame = document.getElementById('featured-video-frame');
+                    frame.innerHTML = '';
+                    
+                    if (video.video_url.includes('youtube.com') || video.video_url.includes('youtu.be')) {
+                        // YouTube video
+                        const videoId = video.video_url.includes('youtu.be') 
+                            ? video.video_url.split('youtu.be/')[1] 
+                            : video.video_url.split('v=')[1]?.split('&')[0];
+                        
+                        frame.innerHTML = `
+                            <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0" 
+                                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen></iframe>
+                        `;
+                    } else {
+                        // Direct video file
+                        frame.innerHTML = `
+                            <video controls style="width: 100%; height: 100%; object-fit: cover;">
+                                <source src="${video.video_url}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error in loadFeaturedVideo:', error);
+            }
+        }
+
+        // Load video when page loads
+        window.addEventListener('load', loadFeaturedVideo);
+        
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-menu ul').classList.toggle('show');
+        });
+
+        // Close mobile menu when clicking on a link
+    </script>
+
+    <!-- WhatsApp Chat Button -->
+    <style>
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            border: none;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+
+        .whatsapp-btn::before {
+            content: 'Chat';
+            position: absolute;
+            left: 65px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-btn:hover::before {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-btn {
+                bottom: 20px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .whatsapp-btn::before {
+                left: 60px;
+                font-size: 10px;
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .whatsapp-btn {
+                bottom: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .whatsapp-btn::before {
+                left: 50px;
+                font-size: 9px;
+                padding: 5px 8px;
+                border-radius: 12px;
+            }
+        }
+    </style>
+
+    <a href="https://wa.me/977033590207?text=Hello!%20I%20would%20like%20to%20chat%20with%20you%20about%20our%20beauty%20services." 
+       class="whatsapp-btn" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.nav-menu ul').classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>

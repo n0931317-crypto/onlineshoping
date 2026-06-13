@@ -1,0 +1,473 @@
+<!-- ADMIN REVIEW MANAGEMENT PAGE -->
+<!-- Add this to your admin.html or create a new admin-reviews.html page -->
+
+<style>
+    .reviews-management-section {
+        padding: 30px;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .reviews-management-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #ff6b8b;
+        padding-bottom: 10px;
+    }
+
+    .review-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .stat-card.pending {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-card.approved {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-card.rejected {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .reviews-filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 10px 20px;
+        border: 2px solid #ddd;
+        background: white;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+
+    .filter-btn.active {
+        background: #ff6b8b;
+        color: white;
+        border-color: #ff6b8b;
+    }
+
+    .filter-btn:hover {
+        border-color: #ff6b8b;
+    }
+
+    .reviews-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .reviews-table thead {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .reviews-table th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .reviews-table td {
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .reviews-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .review-title {
+        font-weight: 600;
+        color: #333;
+        max-width: 200px;
+    }
+
+    .review-text {
+        color: #666;
+        font-size: 14px;
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rating-display {
+        color: #ffc107;
+        font-size: 16px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-approved {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-rejected {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-approve, .btn-reject, .btn-delete {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-approve {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-approve:hover {
+        background: #218838;
+    }
+
+    .btn-reject {
+        background: #dc3545;
+        color: white;
+    }
+
+    .btn-reject:hover {
+        background: #c82333;
+    }
+
+    .btn-delete {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #5a6268;
+    }
+
+    .btn-approve:disabled, .btn-reject:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .loading-message {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+    }
+
+    .review-customer-info {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .expand-review {
+        cursor: pointer;
+        color: #0066cc;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="reviews-management-section">
+    <h2>📝 Review Management</h2>
+
+    <!-- Review Stats -->
+    <div class="review-stats" id="reviewStats">
+        <div class="stat-card">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total Reviews</div>
+        </div>
+        <div class="stat-card pending">
+            <div class="stat-number" id="pendingCount">0</div>
+            <div class="stat-label">Pending Review</div>
+        </div>
+        <div class="stat-card approved">
+            <div class="stat-number" id="approvedCount">0</div>
+            <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card rejected">
+            <div class="stat-number" id="rejectedCount">0</div>
+            <div class="stat-label">Rejected</div>
+        </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="reviews-filters">
+        <button class="filter-btn active" onclick="filterReviews('all')">All Reviews</button>
+        <button class="filter-btn" onclick="filterReviews('pending')">Pending</button>
+        <button class="filter-btn" onclick="filterReviews('approved')">Approved</button>
+        <button class="filter-btn" onclick="filterReviews('rejected')">Rejected</button>
+    </div>
+
+    <!-- Reviews Table -->
+    <div id="reviewsContainer">
+        <div class="loading-message">Loading reviews...</div>
+    </div>
+</div>
+
+<script>
+// Admin Review Management Functions
+let allReviews = [];
+let currentFilter = 'all';
+
+// Load and display reviews
+async function loadAdminReviews() {
+    try {
+        console.log('Loading reviews for admin...');
+        
+        // Get all reviews (pending, approved, rejected)
+        const pending = await fetchAllReviews('pending');
+        const approved = await fetchAllReviews('approved');
+        const rejected = await fetchAllReviews('rejected');
+
+        allReviews = [
+            ...(pending || []),
+            ...(approved || []),
+            ...(rejected || [])
+        ];
+
+        console.log('Total reviews loaded:', allReviews.length);
+
+        // Update stats
+        document.getElementById('totalCount').textContent = allReviews.length;
+        document.getElementById('pendingCount').textContent = pending?.length || 0;
+        document.getElementById('approvedCount').textContent = approved?.length || 0;
+        document.getElementById('rejectedCount').textContent = rejected?.length || 0;
+
+        // Display reviews
+        displayReviews(allReviews);
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        document.getElementById('reviewsContainer').innerHTML = `
+            <div class="empty-message">
+                Error loading reviews: ${error.message}
+            </div>
+        `;
+    }
+}
+
+// Display reviews in table
+function displayReviews(reviews) {
+    if (!reviews || reviews.length === 0) {
+        document.getElementById('reviewsContainer').innerHTML = `
+            <div class="empty-message">No reviews found.</div>
+        `;
+        return;
+    }
+
+    const html = `
+        <table class="reviews-table">
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Title</th>
+                    <th>Customer</th>
+                    <th>Product ID</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${reviews.map(review => `
+                    <tr>
+                        <td class="rating-display">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</td>
+                        <td>
+                            <div class="review-title">${escapeHtml(review.review_title || 'No Title')}</div>
+                            <div class="review-text" title="${escapeHtml(review.review_text)}">${escapeHtml(review.review_text || 'No text')}</div>
+                        </td>
+                        <td>
+                            <div>${escapeHtml(review.customer_name)}</div>
+                            <div class="review-customer-info">${escapeHtml(review.customer_email)}</div>
+                        </td>
+                        <td>#${review.product_id}</td>
+                        <td>
+                            <span class="status-badge status-${review.status}">
+                                ${review.status}
+                            </span>
+                        </td>
+                        <td>${new Date(review.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <div class="action-buttons">
+                                ${review.status !== 'approved' ? `
+                                    <button class="btn-approve" onclick="adminApproveReview(${review.id}, this)">Approve</button>
+                                ` : ''}
+                                ${review.status !== 'rejected' ? `
+                                    <button class="btn-reject" onclick="adminRejectReview(${review.id}, this)">Reject</button>
+                                ` : ''}
+                                <button class="btn-delete" onclick="adminDeleteReview(${review.id}, this)">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    document.getElementById('reviewsContainer').innerHTML = html;
+}
+
+// Filter reviews
+function filterReviews(status) {
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // Filter and display
+    currentFilter = status;
+    const filtered = status === 'all' ? allReviews : allReviews.filter(r => r.status === status);
+    displayReviews(filtered);
+}
+
+// Approve review
+async function adminApproveReview(reviewId, button) {
+    button.disabled = true;
+    button.textContent = 'Approving...';
+
+    try {
+        const result = await approveReview(reviewId);
+        if (result.success) {
+            console.log('✅ Review approved');
+            button.textContent = 'Approved';
+            setTimeout(() => {
+                loadAdminReviews(); // Reload to update status
+            }, 500);
+        } else {
+            alert('Error approving review: ' + result.message);
+            button.disabled = false;
+            button.textContent = 'Approve';
+        }
+    } catch (error) {
+        console.error('Error approving review:', error);
+        alert('Error: ' + error.message);
+        button.disabled = false;
+        button.textContent = 'Approve';
+    }
+}
+
+// Reject review
+async function adminRejectReview(reviewId, button) {
+    button.disabled = true;
+    button.textContent = 'Rejecting...';
+
+    try {
+        const result = await rejectReview(reviewId);
+        if (result.success) {
+            console.log('✅ Review rejected');
+            button.textContent = 'Rejected';
+            setTimeout(() => {
+                loadAdminReviews(); // Reload to update status
+            }, 500);
+        } else {
+            alert('Error rejecting review: ' + result.message);
+            button.disabled = false;
+            button.textContent = 'Reject';
+        }
+    } catch (error) {
+        console.error('Error rejecting review:', error);
+        alert('Error: ' + error.message);
+        button.disabled = false;
+        button.textContent = 'Reject';
+    }
+}
+
+// Delete review
+async function adminDeleteReview(reviewId, button) {
+    if (!confirm('Are you sure you want to delete this review?')) return;
+
+    button.disabled = true;
+    button.textContent = 'Deleting...';
+
+    try {
+        const result = await deleteReview(reviewId);
+        if (result.success) {
+            console.log('✅ Review deleted');
+            setTimeout(() => {
+                loadAdminReviews(); // Reload list
+            }, 500);
+        } else {
+            alert('Error deleting review: ' + result.message);
+            button.disabled = false;
+            button.textContent = 'Delete';
+        }
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        alert('Error: ' + error.message);
+        button.disabled = false;
+        button.textContent = 'Delete';
+    }
+}
+
+// Utility: Escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Give Supabase time to initialize
+    setTimeout(() => {
+        loadAdminReviews();
+    }, 500);
+});
+
+// Auto-refresh every 30 seconds
+setInterval(loadAdminReviews, 30000);
+</script>
