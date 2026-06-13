@@ -1,8 +1,8 @@
 // Supabase Configuration - Clean initialization
 // NOTE: Update these with your actual Supabase project credentials
 // Get these from: https://app.supabase.com/project/[your-project]/settings/api
-const SUPABASE_URL = 'https://yngmogqtfyrnpkwtasut.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InluZ21vZ3F0ZnlybnBrd3Rhc3V0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc0NDI5MzEsImV4cCI6MjA4MzAxODkzMX0.y3rW8dq9prOg3-hAJeXUjcBZluRTD9LfUhyiOa5s2C4';
+const SUPABASE_URL = 'https://solffnnevevczgysxdkw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvbGZmbm5ldmV2Y3pneXN4ZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDg4MzcsImV4cCI6MjA5NjkyNDgzN30.5ko-2SI69J3fbp-TPq5_Rd0IypFea29_fHh1cf6TQJ0';
 
 // EmailJS Configuration
 const EMAILJS_SERVICE_ID = 'service_dmgtj5n'; // Replace with your service ID
