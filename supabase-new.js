@@ -1399,73 +1399,111 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         if (!client) return;
 
-        // Fetch company profile from admin_settings
-        const { data, error } = await client
+        // Fetch all admin settings in one call
+        const { data: settings, error } = await client
             .from('admin_settings')
-            .select('setting_value')
-            .eq('setting_key', 'company_profile')
-            .single();
+            .select('*');
 
         if (error) {
-            console.log('Company profile setting not initialized yet');
+            console.log('Error loading settings for dynamic company details:', error.message);
             return;
         }
 
-        if (data && data.setting_value) {
-            let profile = data.setting_value;
-            if (typeof profile === 'string') {
-                try { profile = JSON.parse(profile); } catch {}
-            }
-            
-            if (profile) {
-                // 1. Update logo images
-                const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img');
-                logoImages.forEach(img => {
-                    if (profile.logo_url) img.src = profile.logo_url;
-                    if (profile.company_name) img.alt = profile.company_name + ' Logo';
-                });
+        if (settings && settings.length > 0) {
+            let companyName = '';
+            let logoUrl = '';
+            let email = '';
+            let phone = '';
+            let location = '';
 
-                // 2. Update company name text
+            // Extract values checking company_profile first, then falling back to admin_settings / contact_info
+            settings.forEach(setting => {
+                let val = setting.setting_value;
+                if (typeof val === 'string') {
+                    try { val = JSON.parse(val); } catch {}
+                }
+                if (!val) return;
+
+                if (setting.setting_key === 'company_profile') {
+                    if (val.company_name) companyName = val.company_name;
+                    if (val.logo_url) logoUrl = val.logo_url;
+                    if (val.email) email = val.email;
+                    if (val.phone) phone = val.phone;
+                    if (val.location) location = val.location;
+                } else if (setting.setting_key === 'admin_settings') {
+                    if (val.businessName && !companyName) companyName = val.businessName;
+                } else if (setting.setting_key === 'contact_info') {
+                    if (val.email && !email) email = val.email;
+                    if (val.phone && !phone) phone = val.phone;
+                    if (val.address && !location) location = val.address;
+                }
+            });
+
+            // 1. Update company name text elements
+            if (companyName) {
+                // Update browser tab title if it matches standard title
+                if (document.title.includes('Nepo Online') || document.title.includes('nepo online') || document.title.includes('Online stores')) {
+                    document.title = document.title.replace(/Nepo Online\s*stores?/gi, companyName);
+                }
+
+                // Update text headers
                 const logoTexts = document.querySelectorAll('.logo-text h1, .logo-text h2, .footer-section h3, .logo h2');
                 logoTexts.forEach(el => {
-                    // Update main title headers, but skip the admin panel's specific logo text if it's already customized
-                    if (profile.company_name && !el.closest('.logo')) {
-                        el.textContent = profile.company_name;
-                    }
+                    el.textContent = companyName;
+                });
+            }
+
+            // 2. Update logo image tags
+            if (logoUrl) {
+                const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img');
+                logoImages.forEach(img => {
+                    img.src = logoUrl;
+                    img.style.display = 'block'; // Make sure the dynamic logo is displayed
+                    if (companyName) img.alt = companyName + ' Logo';
                 });
 
-                // 3. Update contact phone numbers
+                // Update page favicon
+                const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+                if (favicon) {
+                    favicon.href = logoUrl;
+                }
+            }
+
+            // 3. Update contact phone numbers
+            if (phone) {
                 const phoneElements = document.querySelectorAll('#contactPhone, .contact-phone');
                 phoneElements.forEach(el => {
-                    if (profile.phone) el.textContent = profile.phone;
+                    el.textContent = phone;
                 });
+            }
 
-                // 4. Update contact email addresses
+            // 4. Update contact email addresses
+            if (email) {
                 const emailElements = document.querySelectorAll('#contactEmail, .contact-email, #contactEmail a');
                 emailElements.forEach(el => {
-                    if (profile.email) {
-                        if (el.tagName === 'A') {
-                            el.textContent = profile.email;
-                            el.href = 'mailto:' + profile.email;
-                        } else {
-                            el.textContent = profile.email;
-                            const link = el.querySelector('a');
-                            if (link) {
-                                link.textContent = profile.email;
-                                link.href = 'mailto:' + profile.email;
-                            }
+                    if (el.tagName === 'A') {
+                        el.textContent = email;
+                        el.href = 'mailto:' + email;
+                    } else {
+                        el.textContent = email;
+                        const link = el.querySelector('a');
+                        if (link) {
+                            link.textContent = email;
+                            link.href = 'mailto:' + email;
                         }
                     }
                 });
+            }
 
-                // 5. Update contact locations / addresses
+            // 5. Update contact locations / addresses
+            if (location) {
                 const addressElements = document.querySelectorAll('#contactAddress, .contact-address');
                 addressElements.forEach(el => {
-                    if (profile.location) el.innerHTML = profile.location.replace(/\n/g, '<br>');
+                    el.innerHTML = location.replace(/\n/g, '<br>');
                 });
             }
         }
     } catch (err) {
-        console.warn('Error loading dynamic company profile:', err);
+        console.warn('Error loading dynamic company details:', err);
     }
 });
