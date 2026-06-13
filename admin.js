@@ -13,8 +13,8 @@ let isEditing = false;
 
 // Admin Credentials
 const ADMIN_CREDENTIALS = {
-    email: 'admin@nepoonline.com',
-    password: 'nepostores@121'
+    email: 'diwashb32@gmail.com',
+    password: 'dipak@121'
 };
 
 // DOM Content Loaded

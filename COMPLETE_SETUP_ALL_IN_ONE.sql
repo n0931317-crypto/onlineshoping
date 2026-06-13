@@ -663,9 +663,9 @@ CREATE POLICY "Public Delete Policy" ON storage.objects FOR DELETE USING (true);
 -- INSERT INITIAL SEED DATA
 -- ============================================================
 
--- Default Admin User (Password is 'admin123')
+-- Default Admin User (Password is 'dipak@121')
 INSERT INTO admin_users (email, password_hash, name, role)
-VALUES ('admin@nepoonline.com', 'admin123', 'Super Admin', 'admin')
+VALUES ('diwashb32@gmail.com', 'dipak@121', 'Super Admin', 'admin')
 ON CONFLICT (email) DO NOTHING;
 
 -- Initial Settings
