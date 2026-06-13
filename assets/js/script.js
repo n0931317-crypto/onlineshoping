@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Click handler for drawer items
     drawerItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            if (item.classList.contains('drawer-item') && !item.href.includes('orders.html')) {
+            if (item.classList.contains('drawer-item') && !item.href.includes('../../pages/orders.html')) {
                 drawerItems.forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
             }
@@ -742,7 +742,7 @@ function goToCheckout() {
     
     // Hide overlay and redirect
     hideCartOverlay();
-    window.location.href = 'payment.html';
+    window.location.href = '../../pages/payment.html';
 }
 
 // Show notification with type (success, error, info)
@@ -1122,7 +1122,7 @@ function addProductToCart() {
     closeProductModal();
     
     setTimeout(() => {
-        window.location.href = 'payment.html';
+        window.location.href = '../../pages/payment.html';
     }, 500);
 }
 

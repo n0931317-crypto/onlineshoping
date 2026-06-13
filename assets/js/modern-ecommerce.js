@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (goToCheckout) {
         goToCheckout.addEventListener('click', async function() {
             await buildAndStoreOrderData();
-            window.location.href = 'payment.html';
+            window.location.href = '../../pages/payment.html';
         });
     }
     // Close overlay on outside click
@@ -547,7 +547,7 @@ function setupEventListeners() {
     if (priceMinInput) {
         priceMinInput.addEventListener('input', (e) => {
             priceMin = parseInt(e.target.value);
-            document.getElementById('minDisplay').textContent = 'Rs. ' + priceMin.toLocaleString('en-IN');
+            document.getElementById('minDisplay').textContent = 'Rs. ' + priceMin.toLocaleString('en-US');
             applyFilters();
         });
     }
@@ -555,7 +555,7 @@ function setupEventListeners() {
     if (priceMaxInput) {
         priceMaxInput.addEventListener('input', (e) => {
             priceMax = parseInt(e.target.value);
-            document.getElementById('maxDisplay').textContent = 'Rs. ' + priceMax.toLocaleString('en-IN');
+            document.getElementById('maxDisplay').textContent = 'Rs. ' + priceMax.toLocaleString('en-US');
             applyFilters();
         });
     }
@@ -1052,7 +1052,7 @@ async function addToCart() {
         closeProductModal();
 
         // Navigate to payment page
-        window.location.href = 'payment.html';
+        window.location.href = '../../pages/payment.html';
     } catch (error) {
         console.error('Error adding to cart:', error);
         alert('Error adding to cart. Please try again.');
@@ -1109,7 +1109,7 @@ async function buildAndStoreOrderData() {
 function buyNow() {
     alert('✓ Proceeding to checkout...');
     closeProductModal();
-    window.location.href = 'orders.html';
+    window.location.href = '../../pages/orders.html';
 }
 
 function addProductQuick(productId) {
@@ -1131,7 +1131,7 @@ function addProductQuick(productId) {
     // Redirect to payment page after 1 second
     setTimeout(async () => {
         await buildAndStoreOrderData();
-        window.location.href = 'payment.html';
+        window.location.href = '../../pages/payment.html';
     }, 1000);
 }
 
@@ -1178,7 +1178,7 @@ async function orderNowFromCollection(productId) {
 
         // Show success message and redirect
         alert('✓ Proceeding to checkout...');
-        window.location.href = 'payment.html';
+        window.location.href = '../../pages/payment.html';
     } catch (error) {
         console.error('Error in orderNowFromCollection:', error);
         alert('Error processing order. Please try again.');

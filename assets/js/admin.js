@@ -2002,7 +2002,7 @@ async function loadSettings() {
             document.getElementById('company-phone').value = companyProfile.phone || '033590207';
             document.getElementById('company-location').value = companyProfile.location || 'Khaireni, Gulmi, Nepal';
             
-            const logoUrl = companyProfile.logo_url || 'uploads/logo.png';
+            const logoUrl = companyProfile.logo_url || '../../assets/images/logo.png';
             document.getElementById('company-logo-url').value = logoUrl;
             const logoPreview = document.getElementById('company-logo-preview');
             if (logoPreview) logoPreview.src = logoUrl;
@@ -2232,33 +2232,44 @@ async function saveCompanyProfile(e) {
                 const fileExt = logoFile.name.split('.').pop();
                 const fileName = `company-logo-${Date.now()}.${fileExt}`;
                 
-                const { data: uploadData, error: uploadError } = await client
-                    .storage
-                    .from('logo')
-                    .upload(`assets/${fileName}`, logoFile);
-                    
-                if (uploadError) {
-                    throw uploadError;
+                // Try 'product-images' bucket first (standard bucket), then fallback to 'logo'
+                let uploadSuccess = false;
+                for (const bucketName of ['product-images', 'logo', 'gallery-images']) {
+                    const { data: uploadData, error: uploadError } = await client
+                        .storage
+                        .from(bucketName)
+                        .upload(`logos/${fileName}`, logoFile, { upsert: true });
+                        
+                    if (!uploadError) {
+                        const { data: publicData } = await client
+                            .storage
+                            .from(bucketName)
+                            .getPublicUrl(`logos/${fileName}`);
+                            
+                        companyLogoUrl = publicData.publicUrl;
+                        document.getElementById('company-logo-url').value = companyLogoUrl;
+                        const preview = document.getElementById('company-logo-preview');
+                        if (preview) preview.src = companyLogoUrl;
+                        console.log(`✅ Logo uploaded to '${bucketName}', URL:`, companyLogoUrl);
+                        uploadSuccess = true;
+                        break;
+                    } else {
+                        console.warn(`⚠️ Bucket '${bucketName}' failed:`, uploadError.message);
+                    }
                 }
                 
-                // Get public URL
-                const { data: publicData } = await client
-                    .storage
-                    .from('logo')
-                    .getPublicUrl(`assets/${fileName}`);
-                    
-                companyLogoUrl = publicData.publicUrl;
-                document.getElementById('company-logo-url').value = companyLogoUrl;
-                console.log('Logo uploaded, URL:', companyLogoUrl);
+                if (!uploadSuccess) {
+                    throw new Error('All storage buckets failed. Please paste a direct image URL instead.');
+                }
             } catch (uploadErr) {
                 console.warn('⚠️ Logo upload failed (storage bucket issue):', uploadErr);
-                showNotification('⚠️ Logo file upload failed. (You can paste a direct logo image URL instead.) Saving other changes...', 'warning');
+                showNotification('⚠️ Logo file upload failed. Please paste a direct image URL in the URL field instead.', 'warning');
             }
         }
         
         const companyProfile = {
             company_name: companyName,
-            logo_url: companyLogoUrl || 'uploads/logo.png',
+            logo_url: companyLogoUrl || '../../assets/images/logo.png',
             email: companyEmail,
             phone: companyPhone,
             location: companyLocation
@@ -2293,6 +2304,31 @@ async function saveCompanyProfile(e) {
         if (conPhoneEl) conPhoneEl.value = companyPhone;
         if (conEmailEl) conEmailEl.value = companyEmail;
         if (conAddrEl) conAddrEl.value = companyLocation;
+        
+        // Live-update logo images everywhere on the current page
+        if (companyLogoUrl && companyLogoUrl !== '../../assets/images/logo.png') {
+            const allLogoImgs = document.querySelectorAll(
+                '.logo-image, .nav-logo-image, .logo img, .company-logo-img, img[alt*="logo" i], img[alt*="Logo"], #company-logo-preview'
+            );
+            allLogoImgs.forEach(img => {
+                img.src = companyLogoUrl;
+                img.style.display = 'block';
+            });
+            // Also update favicon
+            const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+            if (favicon) favicon.href = companyLogoUrl;
+        }
+        
+        // Live-update company name text
+        if (companyName) {
+            const nameEls = document.querySelectorAll('.logo-text h1, .logo-text h2, .brand-title, .footer-brand-name');
+            nameEls.forEach(el => { el.textContent = companyName; });
+        }
+        
+        // Trigger global re-apply if available
+        if (typeof window.applyDynamicReplacements === 'function') {
+            setTimeout(window.applyDynamicReplacements, 100);
+        }
         
         showNotification('✅ Company profile saved and synchronized across all forms!', 'success');
         
@@ -2425,7 +2461,7 @@ async function loadOrders(statusFilter = '') {
         
         orders.forEach(order => {
             const row = document.createElement('tr');
-            const orderDate = new Date(order.created_at).toLocaleDateString('en-IN');
+            const orderDate = new Date(order.created_at).toLocaleDateString('en-US');
             const statusBadgeClass = {
                 'pending_verification': 'pending',
                 'verified': 'processing',
@@ -2522,7 +2558,7 @@ async function viewOrderDetails(orderId) {
             return;
         }
         
-        const orderDate = new Date(order.created_at).toLocaleDateString('en-IN');
+        const orderDate = new Date(order.created_at).toLocaleDateString('en-US');
         const statusLabel = order.status
             .split('_')
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -2708,7 +2744,7 @@ async function viewOrderDetails(orderId) {
                 <!-- Confirmed By Admin -->
                 ${order.confirmed_by_admin ? `
                     <div style="background: #c8e6c9; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #4CAF50;">
-                        <p style="margin: 0;"><strong><i class="fas fa-check-circle"></i> Confirmed by Admin</strong> on ${new Date(order.confirmed_at).toLocaleDateString('en-IN')}</p>
+                        <p style="margin: 0;"><strong><i class="fas fa-check-circle"></i> Confirmed by Admin</strong> on ${new Date(order.confirmed_at).toLocaleDateString('en-US')}</p>
                     </div>
                 ` : ''}
                 

@@ -455,7 +455,7 @@ async function addToCart() {
         // Navigate to payment page with order summary
         setTimeout(() => {
             console.log('🔷 Navigating to payment.html');
-            window.location.href = 'payment.html';
+            window.location.href = '../../pages/payment.html';
         }, 300);
     } catch (error) {
         console.error('❌ Error in addToCart:', error);
@@ -467,7 +467,7 @@ function buyNow() {
     alert('Proceeding to checkout...');
     closeProductModal();
     // Redirect to orders page
-    window.location.href = 'orders.html';
+    window.location.href = '../../pages/orders.html';
 }
 
 function navigateToPayment() {
@@ -485,7 +485,7 @@ function navigateToPayment() {
     
     console.log('✅ Navigating to payment with', cartItems.length, 'items');
     // Navigate to payment page
-    window.location.href = 'payment.html';
+    window.location.href = '../../pages/payment.html';
 }
 
 function addProductQuick(productId) {

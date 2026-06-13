@@ -4,6 +4,59 @@
 const SUPABASE_URL = 'https://solffnnevevczgysxdkw.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNvbGZmbm5ldmV2Y3pneXN4ZGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDg4MzcsImV4cCI6MjA5NjkyNDgzN30.5ko-2SI69J3fbp-TPq5_Rd0IypFea29_fHh1cf6TQJ0';
 
+// ============================================================
+// INSTANT BRANDING: Apply cached logo/name IMMEDIATELY from localStorage
+// This runs before Supabase loads so users never see the old placeholder logo
+// ============================================================
+(function applyInstantBranding() {
+    const cachedLogo = localStorage.getItem('_cached_logo_url');
+    const cachedName = localStorage.getItem('_cached_company_name');
+    
+    function applyBranding() {
+        if (cachedLogo && cachedLogo !== 'uploads/logo.png' && cachedLogo !== '../../assets/images/logo.png' && !cachedLogo.endsWith('assets/images/logo.png')) {
+            // Apply to all logo images immediately
+            const logoSelectors = [
+                '.logo-image', '.nav-logo-image', '.logo img',
+                '.company-logo-img', '.modern-logo img', '.logo-wrap img',
+                'header img', '.about-logo img'
+            ];
+            logoSelectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(img => {
+                    img.src = cachedLogo;
+                    img.style.display = 'block';
+                    if (cachedName) img.alt = cachedName + ' Logo';
+                });
+            });
+            // Also match by alt attribute (case-insensitive via JS)
+            document.querySelectorAll('img').forEach(img => {
+                const alt = (img.alt || '').toLowerCase();
+                if (alt.includes('logo') || alt.includes('brand') || alt === 'website logo') {
+                    img.src = cachedLogo;
+                    img.style.display = 'block';
+                }
+            });
+            // Update favicon
+            const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+            if (favicon) favicon.href = cachedLogo;
+        }
+        if (cachedName) {
+            // Update company name in header/footer elements
+            document.querySelectorAll('.logo-text h1, .logo-text h2, .brand-title, .footer-brand-name').forEach(el => {
+                el.textContent = cachedName;
+            });
+        }
+    }
+    
+    // Apply immediately (for scripts loaded before DOM) and on DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyBranding);
+    } else {
+        applyBranding();
+    }
+    // Also apply after everything loads
+    window.addEventListener('load', applyBranding);
+})();
+
 // EmailJS Configuration
 const EMAILJS_SERVICE_ID = 'service_dmgtj5n'; // Replace with your service ID
 const EMAILJS_TEMPLATE_ID = 'template_zw2605w'; // Replace with your template ID
@@ -939,7 +992,7 @@ async function sendNewAppointmentEmailToAdmin(appointmentData) {
             ${appointmentData.requirements ? `<p><strong>Special Requirements:</strong> ${appointmentData.requirements}</p>` : ''}
         </div>
         
-        <p><a href="http://localhost:3000/admin.html" class="action-btn">View in Admin Panel</a></p>
+        <p><a href="../../pages/admin/admin.html" class="action-btn">View in Admin Panel</a></p>
         
         <div style="margin-top: 20px; padding: 15px; background-color: #e7f3ff; border-left: 4px solid #2196F3; border-radius: 4px;">
             <p><strong>Action Required:</strong> Please confirm or reject this appointment in your admin panel.</p>
@@ -1454,6 +1507,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
 
+            // Cache settings in localStorage for instant next-load access
+            if (companyName) localStorage.setItem('_cached_company_name', companyName);
+            if (logoUrl && logoUrl !== 'uploads/logo.png' && logoUrl !== '../../assets/images/logo.png' && !logoUrl.endsWith('assets/images/logo.png')) localStorage.setItem('_cached_logo_url', logoUrl);
+            if (email) localStorage.setItem('_cached_company_email', email);
+            if (phone) localStorage.setItem('_cached_company_phone', phone);
+            if (location) localStorage.setItem('_cached_company_location', location);
+
             // Helper for global regex-based text node replacement
             function replaceRegexGlobally(regex, newVal) {
                 if (!regex || !newVal) return;
@@ -1508,8 +1568,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 // 2. Update logo image tags and favicon
-                if (logoUrl) {
-                    const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img, .company-logo-img, img[alt*="Logo"], .about-logo img, .company-logo-img img');
+                if (logoUrl && logoUrl !== 'uploads/logo.png' && logoUrl !== '../../assets/images/logo.png' && !logoUrl.endsWith('assets/images/logo.png')) {
+                    const logoImages = document.querySelectorAll(
+                        '.logo-image, .nav-logo-image, .logo img, .company-logo-img, ' +
+                        'img[alt*="Logo"], img[alt*="logo"], img[alt*="Brand"], ' +
+                        '.about-logo img, .company-logo-img img, ' +
+                        'header img, .site-logo img, #site-logo, #navbar-logo, ' +
+                        '.modern-logo img, .logo-wrap img'
+                    );
                     logoImages.forEach(img => {
                         img.src = logoUrl;
                         img.style.display = 'block';

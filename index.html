@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nepo Online Stores - Premium Fashion & Fabric Dresses</title>
-    <link rel="icon" type="image/png" href="uploads/logo.png">
-    <link rel="stylesheet" href="modern-premium-styles.css">
-    <link rel="stylesheet" href="product-modal.css">
+    <link rel="icon" type="image/png" href="assets/images/logo.png">
+    <link rel="stylesheet" href="assets/css/modern-premium-styles.css">
+    <link rel="stylesheet" href="assets/css/product-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -30,7 +30,7 @@
                 <i class="fas fa-bars"></i>
             </div>
             <div class="logo modern-logo">
-                <img src="uploads/logo.png" alt="Website Logo" class="logo-image">
+                <img src="assets/images/logo.png" alt="Website Logo" class="logo-image">
                 <div class="logo-text">
                     <h1>Nepo Online stores</h1>
                     <p>Premium Fabrics & Fashion</p>
@@ -40,12 +40,12 @@
                 <ul>
                     <li><a href="#home" class="active"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="#shop" class="nav-link"><i class="fas fa-th-large"></i> Shop</a></li>
-                    <li><a href="about-us.html" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="pages/about-us.html" class="nav-link"><i class="fas fa-info-circle"></i> About</a></li>
                     <li><a href="#gallery" class="nav-link"><i class="fas fa-images"></i> Gallery</a></li>
                     <li><a href="#contact" class="nav-link"><i class="fas fa-phone"></i> Contact</a></li>
-                    <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
-                    <li><a href="track.html"><i class="fas fa-truck"></i> Track</a></li>
-                    <li><a href="admin.html" class="admin-btn"><i class="fas fa-user-shield"></i> Admin</a></li>
+                    <li><a href="pages/orders.html"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                    <li><a href="pages/track.html"><i class="fas fa-truck"></i> Track</a></li>
+                    <li><a href="pages/admin/admin.html" class="admin-btn"><i class="fas fa-user-shield"></i> Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -83,8 +83,8 @@
     <nav class="bottom-nav-drawer">
         <a href="index.html" class="active"><i class="fas fa-home"></i><span>Home</span></a>
         <a href="#shop"><i class="fas fa-th-large"></i><span>Shop</span></a>
-        <a href="orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
-        <a href="track.html"><i class="fas fa-truck"></i><span>Track</span></a>
+        <a href="pages/orders.html"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+        <a href="pages/track.html"><i class="fas fa-truck"></i><span>Track</span></a>
         <a href="https://wa.me/9779823145063" target="_blank"><i class="fas fa-whatsapp"></i><span>Chat</span></a>
     </nav>
         <style>
@@ -758,11 +758,11 @@
                 <div class="footer-section">
                     <h4>Quick Links</h4>
                     <ul>
-                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="pages/about-us.html">About Us</a></li>
                         <li><a href="#shop">Shop</a></li>
                         <li><a href="#gallery">Gallery</a></li>
                         <li><a href="#contact">Contact</a></li>
-                        <li><a href="orders.html">Orders</a></li>
+                        <li><a href="pages/orders.html">Orders</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -800,8 +800,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="supabase-new.js"></script>
-    <script src="modern-ecommerce.js"></script>
+    <script src="assets/js/supabase-new.js"></script>
+    <script src="assets/js/modern-ecommerce.js"></script>
     <script>
     // Fetch and display latest 3 reviews in footer
     async function loadFooterReviews() {

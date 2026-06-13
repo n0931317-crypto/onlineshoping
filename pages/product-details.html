@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details - Nepo Online stores</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="product-modal.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/product-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -423,7 +423,7 @@
     <header>
         <div class="container">
             <div class="logo">
-                <img src="uploads/logo.png" alt="Nepo Online stores Logo" class="logo-image">
+                <img src="../assets/images/logo.png" alt="Nepo Online stores Logo" class="logo-image">
                 <div class="logo-text">
                     <h1>Nepo Online stores</h1>
                     <p>& Cosmetic Center</p>
@@ -431,13 +431,13 @@
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="index.html#services">Services</a></li>
-                    <li><a href="index.html#products">Products</a></li>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#services">Services</a></li>
+                    <li><a href="../index.html#products">Products</a></li>
                     <li><a href="orders.html">Order</a></li>
                     <li><a href="track.html">Track</a></li>
                     <li><a href="about-us.html">About</a></li>
-                    <li><a href="admin.html" class="admin-btn">Admin</a></li>
+                    <li><a href="admin/admin.html" class="admin-btn">Admin</a></li>
                 </ul>
                 <div class="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
@@ -449,8 +449,8 @@
     <!-- Breadcrumb -->
     <div class="details-container" style="margin-top: 100px; margin-bottom: 0;">
         <div style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">
-            <a href="index.html" style="color: #ff6b8b; text-decoration: none;">Home</a> / 
-            <a href="index.html#products" style="color: #ff6b8b; text-decoration: none;">Products</a> / 
+            <a href="../index.html" style="color: #ff6b8b; text-decoration: none;">Home</a> / 
+            <a href="../index.html#products" style="color: #ff6b8b; text-decoration: none;">Products</a> / 
             <span id="breadcrumb-name">Product Details</span>
         </div>
     </div>
@@ -584,8 +584,8 @@
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="index.html#products">Products</a></li>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../index.html#products">Products</a></li>
                         <li><a href="shipping.html">Shipping Policy</a></li>
                         <li><a href="about-us.html">About Us</a></li>
                     </ul>
@@ -603,7 +603,7 @@
         </div>
     </footer>
 
-    <script src="supabase-new.js"></script>
+    <script src="../assets/js/supabase-new.js"></script>
     <script>
         // Mobile menu
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
@@ -684,7 +684,7 @@
             const productId = urlParams.get('id');
             
             if (!productId) {
-                document.body.innerHTML = '<div style="padding: 100px; text-align: center;"><h2>Product not found</h2><a href="index.html#products">Back to Products</a></div>';
+                document.body.innerHTML = '<div style="padding: 100px; text-align: center;"><h2>Product not found</h2><a href="../index.html#products">Back to Products</a></div>';
                 return;
             }
 

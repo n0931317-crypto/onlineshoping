@@ -486,7 +486,7 @@ async function confirmPayment() {
 
         // Redirect to invoice after 3 seconds
         setTimeout(() => {
-            window.location.href = 'invoice.html';
+            window.location.href = '../../pages/invoice.html';
         }, 3000);
 
     } catch (error) {
@@ -502,7 +502,7 @@ function goBackToOrders() {
     if (confirm('Are you sure? Your order data will be cleared.')) {
         sessionStorage.removeItem('orderData');
         localStorage.removeItem('orderData');
-        window.location.href = 'orders.html';
+        window.location.href = '../../pages/orders.html';
     }
 }
 

@@ -780,7 +780,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <a href="index.html" class="back-btn">← Back to Shopping</a>
+            <a href="../index.html" class="back-btn">← Back to Shopping</a>
             <h1>🛒 Checkout</h1>
             <p>Complete your purchase securely</p>
         </div>
@@ -1158,7 +1158,7 @@
             // If cart is empty, show message and reset totals
             if (!cartItems || cartItems.length === 0) {
                 console.warn('⚠️ Cart is empty');
-                container.innerHTML = '<div style="text-align: center; opacity: 0.8; padding: 20px; color: white;">Your cart is empty. <a href="index.html" style="color: #4facfe; text-decoration: underline;">Continue Shopping</a></div>';
+                container.innerHTML = '<div style="text-align: center; opacity: 0.8; padding: 20px; color: white;">Your cart is empty. <a href="../index.html" style="color: #4facfe; text-decoration: underline;">Continue Shopping</a></div>';
                 if (subtotalEl) subtotalEl.textContent = 'Rs. 0.00';
                 if (totalEl) totalEl.textContent = 'Rs. 0.00';
                 return;
