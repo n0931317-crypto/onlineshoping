@@ -642,9 +642,22 @@ CREATE POLICY "allow_all" ON payment_qr_images FOR ALL USING (true);
 -- ============================================================
 -- STORAGE POLICIES (Make Storage uploads accessible)
 -- ============================================================
--- NOTE: Disabling storage RLS ensures seamless image/video uploads 
--- from both admin panel and checkout without credential blocks.
-ALTER TABLE storage.objects DISABLE ROW LEVEL SECURITY;
+-- NOTE: Creating permissive policies ensures seamless image/video uploads 
+-- from both admin panel and checkout without RLS credential blocks.
+-- We use policies here instead of disabling RLS on storage.objects directly
+-- to avoid table ownership errors (must be owner of table objects).
+
+DROP POLICY IF EXISTS "Public Select Policy" ON storage.objects;
+CREATE POLICY "Public Select Policy" ON storage.objects FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Public Insert Policy" ON storage.objects;
+CREATE POLICY "Public Insert Policy" ON storage.objects FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Update Policy" ON storage.objects;
+CREATE POLICY "Public Update Policy" ON storage.objects FOR UPDATE USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public Delete Policy" ON storage.objects;
+CREATE POLICY "Public Delete Policy" ON storage.objects FOR DELETE USING (true);
 
 -- ============================================================
 -- INSERT INITIAL SEED DATA
