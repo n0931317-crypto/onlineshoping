@@ -321,6 +321,15 @@ function setupEventListeners() {
             }
         });
     }
+    const companyLogoUrl = document.getElementById('company-logo-url');
+    if (companyLogoUrl) {
+        companyLogoUrl.addEventListener('input', function(e) {
+            const preview = document.getElementById('company-logo-preview');
+            if (preview && e.target.value.trim()) {
+                preview.src = e.target.value.trim();
+            }
+        });
+    }
     const companyProfileForm = document.getElementById('company-profile-form');
     if (companyProfileForm) {
         companyProfileForm.addEventListener('submit', saveCompanyProfile);
