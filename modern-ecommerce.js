@@ -211,19 +211,20 @@ async function loadHeroVideo() {
             return;
         }
 
-        // Fetch hero video URL from settings table
+        // Fetch hero video URL from home_video table
         const { data, error } = await client
-            .from('settings')
-            .select('hero_video_url')
-            .eq('key', 'hero_video');
+            .from('home_video')
+            .select('video_url')
+            .eq('is_active', true)
+            .limit(1);
 
         if (error) {
             console.warn('Could not fetch video URL:', error.message);
             return;
         }
 
-        if (data && data.length > 0 && data[0].hero_video_url) {
-            const videoUrl = data[0].hero_video_url.trim();
+        if (data && data.length > 0 && data[0].video_url) {
+            const videoUrl = data[0].video_url.trim();
             
             if (videoUrl && videoUrl.length > 0) {
                 const videoElement = document.getElementById('heroVideo');
@@ -388,7 +389,16 @@ async function loadAdminSettings() {
         if (settings && settings.length > 0) {
             // Parse settings and update page
             settings.forEach(setting => {
-                const value = JSON.parse(setting.setting_value || '{}');
+                let value = setting.setting_value;
+                if (typeof value === 'string') {
+                    try {
+                        value = JSON.parse(value);
+                    } catch (e) {
+                        value = {};
+                    }
+                } else if (value === null || value === undefined) {
+                    value = {};
+                }
                 
                 if (setting.setting_key === 'business_hours') {
                     updateBusinessHours(value);

@@ -147,12 +147,12 @@ async function initializeAdminPanel() {
         // Show setup reminder if needed
         const client = getClient();
         if (client) {
-            const { data: tables } = await client
+            const { data: tables, error } = await client
                 .from('home_video')
-                .select('count', { count: 'exact' })
+                .select('*')
                 .limit(1);
             
-            if (tables === null || tables?.count === undefined) {
+            if (error || tables === null) {
                 console.log('⚠️  Database tables may not be fully set up');
             }
         }
@@ -1888,6 +1888,41 @@ async function deleteAppointmentConfirm(id) {
 }
 
 // Settings Functions
+async function getSetting(key) {
+    try {
+        const client = getClient();
+        if (!client) return null;
+
+        const { data, error } = await client
+            .from('admin_settings')
+            .select('setting_value')
+            .eq('setting_key', key)
+            .single();
+
+        if (error) {
+            if (error.code !== 'PGRST116') {
+                console.warn('⚠️ Get setting error:', error.message);
+            }
+            return null;
+        }
+        
+        if (!data || data.setting_value === null || data.setting_value === undefined) return null;
+        
+        let value = data.setting_value;
+        if (typeof value === 'string') {
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
+            }
+        }
+        return value;
+    } catch (error) {
+        console.error('❌ Get setting exception:', error);
+        return null;
+    }
+}
+
 async function loadSettings() {
     try {
         // Load business hours
@@ -2748,37 +2783,33 @@ async function saveHomeVideo() {
 
         statusDiv.textContent = '⏳ Saving to database...';
 
-        // Save to settings table
-        const { error: updateError } = await client
-            .from('settings')
-            .update({ 
-                hero_video_url: finalVideoUrl,
+        // Delete any existing active video in home_video table to keep only one active
+        await client.from('home_video').delete().eq('is_active', true);
+
+        // Save to home_video table
+        const { error: insertError } = await client
+            .from('home_video')
+            .insert({ 
+                title: 'Home Video',
+                video_url: finalVideoUrl,
+                is_active: true,
                 updated_at: new Date().toISOString()
-            })
-            .eq('key', 'hero_video');
+            });
 
-        if (updateError) {
-            console.log('Update failed (row might not exist):', updateError.message);
-            
-            // Try insert if update failed
-            const { error: insertError } = await client
-                .from('settings')
-                .insert({
-                    key: 'hero_video',
-                    hero_video_url: finalVideoUrl,
-                    description: 'Hero section background video'
-                });
-
-            if (insertError) {
-                throw insertError;
-            }
+        if (insertError) {
+            throw insertError;
         }
 
         // Verify it was saved
-        const { data: verifyData } = await client
-            .from('settings')
-            .select('hero_video_url')
-            .eq('key', 'hero_video');
+        const { data: verifyData, error: verifyError } = await client
+            .from('home_video')
+            .select('video_url')
+            .eq('is_active', true)
+            .limit(1);
+
+        if (verifyError) {
+            throw verifyError;
+        }
 
         console.log('Verified saved URL:', verifyData);
 

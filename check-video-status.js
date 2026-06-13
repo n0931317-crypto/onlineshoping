@@ -23,18 +23,18 @@ window.checkVideoStatus = async function() {
     // Check 3: Query database
     if (client) {
         try {
-            console.log('\n📡 Querying settings table...');
+            console.log('\n📡 Querying home_video table...');
             const { data, error } = await client
-                .from('settings')
+                .from('home_video')
                 .select('*')
-                .eq('key', 'hero_video');
+                .eq('is_active', true);
             
             if (error) {
                 console.error('❌ Database error:', error);
             } else {
                 console.log('✓ Data retrieved:', data);
                 if (data && data.length > 0) {
-                    const videoUrl = data[0].hero_video_url;
+                    const videoUrl = data[0].video_url;
                     console.log('✓ Video URL:', videoUrl || '(empty)');
                     
                     if (videoUrl) {
@@ -48,7 +48,7 @@ window.checkVideoStatus = async function() {
                         }
                     }
                 } else {
-                    console.warn('⚠ No hero_video setting found in database');
+                    console.warn('⚠ No active video found in home_video table');
                 }
             }
         } catch (err) {
@@ -61,14 +61,14 @@ window.checkVideoStatus = async function() {
         console.log('\n🎬 Manual video load test...');
         try {
             const { data, error } = await client
-                .from('settings')
-                .select('hero_video_url')
-                .eq('key', 'hero_video')
+                .from('home_video')
+                .select('video_url')
+                .eq('is_active', true)
                 .single();
             
-            if (data && data.hero_video_url) {
-                console.log('Setting video source to:', data.hero_video_url);
-                videoElement.src = data.hero_video_url;
+            if (data && data.video_url) {
+                console.log('Setting video source to:', data.video_url);
+                videoElement.src = data.video_url;
                 videoElement.style.display = 'block';
                 console.log('✓ Video source set and display enabled');
             }
