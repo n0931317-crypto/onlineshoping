@@ -289,6 +289,26 @@ function setupEventListeners() {
     document.getElementById('contact-form').addEventListener('submit', saveContactInfo);
     document.getElementById('admin-settings-form').addEventListener('submit', saveAdminSettings);
     
+    // Company profile preview and form listeners
+    const companyLogoFile = document.getElementById('company-logo-file');
+    if (companyLogoFile) {
+        companyLogoFile.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.getElementById('company-logo-preview');
+                    if (img) img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    const companyProfileForm = document.getElementById('company-profile-form');
+    if (companyProfileForm) {
+        companyProfileForm.addEventListener('submit', saveCompanyProfile);
+    }
+    
     // Image preview handlers
     document.getElementById('service-image-file').addEventListener('change', function(e) {
         previewImage(e.target.files[0], 'service-image-preview');
@@ -1947,6 +1967,20 @@ async function loadSettings() {
             document.getElementById('instagram-url').value = adminSettings.instagramUrl || '';
             document.getElementById('facebook-url').value = adminSettings.facebookUrl || '';
         }
+        
+        // Load company profile settings
+        const companyProfile = await getSetting('company_profile');
+        if (companyProfile) {
+            document.getElementById('company-name').value = companyProfile.company_name || 'Nepo Online Stores';
+            document.getElementById('company-email').value = companyProfile.email || 'info@nepoonline.com';
+            document.getElementById('company-phone').value = companyProfile.phone || '033590207';
+            document.getElementById('company-location').value = companyProfile.location || 'Khaireni, Gulmi, Nepal';
+            
+            const logoUrl = companyProfile.logo_url || 'uploads/logo.png';
+            document.getElementById('company-logo-url').value = logoUrl;
+            const logoPreview = document.getElementById('company-logo-preview');
+            if (logoPreview) logoPreview.src = logoUrl;
+        }
     } catch (error) {
         console.error('Error loading settings:', error);
     }
@@ -2101,6 +2135,84 @@ async function saveAdminSettings(e) {
         console.error('❌ Error saving settings:', error);
         const errorMsg = error.message || error.toString();
         showNotification(`❌ Failed to save: ${errorMsg}`, 'error');
+    } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+}
+
+async function saveCompanyProfile(e) {
+    e.preventDefault();
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    
+    try {
+        submitBtn.textContent = 'Saving...';
+        submitBtn.disabled = true;
+        
+        const companyName = document.getElementById('company-name').value.trim();
+        const companyEmail = document.getElementById('company-email').value.trim();
+        const companyPhone = document.getElementById('company-phone').value.trim();
+        const companyLocation = document.getElementById('company-location').value.trim();
+        let companyLogoUrl = document.getElementById('company-logo-url').value;
+        const logoFile = document.getElementById('company-logo-file').files[0];
+        
+        // Validate inputs
+        if (!companyName) throw new Error('Company name is required');
+        if (!companyEmail) throw new Error('Contact email is required');
+        if (!companyPhone) throw new Error('Phone number is required');
+        if (!companyLocation) throw new Error('Location is required');
+        
+        const client = getClient();
+        if (!client) throw new Error('Supabase client not initialized');
+        
+        // If a new logo image is selected, upload it
+        if (logoFile) {
+            console.log('Uploading company logo file:', logoFile.name);
+            submitBtn.textContent = 'Uploading logo...';
+            
+            const fileExt = logoFile.name.split('.').pop();
+            const fileName = `company-logo-${Date.now()}.${fileExt}`;
+            
+            const { data: uploadData, error: uploadError } = await client
+                .storage
+                .from('logo')
+                .upload(`assets/${fileName}`, logoFile);
+                
+            if (uploadError) {
+                throw new Error('Logo upload failed: ' + uploadError.message);
+            }
+            
+            // Get public URL
+            const { data: publicData } = await client
+                .storage
+                .from('logo')
+                .getPublicUrl(`assets/${fileName}`);
+                
+            companyLogoUrl = publicData.publicUrl;
+            document.getElementById('company-logo-url').value = companyLogoUrl;
+            console.log('Logo uploaded, URL:', companyLogoUrl);
+        }
+        
+        const companyProfile = {
+            company_name: companyName,
+            logo_url: companyLogoUrl || 'uploads/logo.png',
+            email: companyEmail,
+            phone: companyPhone,
+            location: companyLocation
+        };
+        
+        console.log('📝 Saving company profile:', companyProfile);
+        submitBtn.textContent = 'Saving settings...';
+        await saveSetting('company_profile', companyProfile);
+        
+        showNotification('✅ Company profile saved successfully! Refreshing pages will apply the changes.', 'success');
+        
+    } catch (error) {
+        console.error('❌ Error saving company profile:', error);
+        const errorMsg = error.message || error.toString();
+        showNotification(`❌ Failed to save profile: ${errorMsg}`, 'error');
     } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;

@@ -659,6 +659,11 @@ CREATE POLICY "Public Update Policy" ON storage.objects FOR UPDATE USING (true) 
 DROP POLICY IF EXISTS "Public Delete Policy" ON storage.objects;
 CREATE POLICY "Public Delete Policy" ON storage.objects FOR DELETE USING (true);
 
+-- Create 'logo' storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('logo', 'logo', true)
+ON CONFLICT (id) DO NOTHING;
+
 -- ============================================================
 -- INSERT INITIAL SEED DATA
 -- ============================================================
@@ -673,7 +678,8 @@ INSERT INTO admin_settings (setting_key, setting_value) VALUES
 ('business_hours', '{"opening":"09:00","closing":"19:00"}'),
 ('contact_info', '{"phone":"033590207","email":"nepoonline0@gmail.com","address":"Mirchaiya Bazar, Sirha, Nepal"}'),
 ('admin_settings', '{"businessName":"Nepo Online Stores","instagramUrl":"https://www.instagram.com/nepoonline0/","facebookUrl":"https://www.facebook.com/profile.php?id=61580118031654"}'),
-('payment_methods', '{"esewa":true,"khalti":true,"bank":true}')
+('payment_methods', '{"esewa":true,"khalti":true,"bank":true}'),
+('company_profile', '{"company_name":"Nepo Online Stores","logo_url":"uploads/logo.png","email":"info@nepoonline.com","phone":"033590207","location":"Khaireni, Gulmi, Nepal"}')
 ON CONFLICT (setting_key) DO NOTHING;
 
 -- Sample Categories

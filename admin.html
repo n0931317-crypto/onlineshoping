@@ -633,6 +633,37 @@
                             <button type="submit" class="btn">Save Settings</button>
                         </form>
                     </div>
+                    <div class="setting-card">
+                        <h3><i class="fas fa-building"></i> Company Profile</h3>
+                        <form id="company-profile-form">
+                            <div class="form-group">
+                                <label>Company Name</label>
+                                <input type="text" id="company-name" placeholder="Company Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Company Logo</label>
+                                <div class="logo-preview-container" style="margin-bottom: 10px; text-align: center;">
+                                    <img id="company-logo-preview" src="uploads/logo.png" alt="Logo Preview" style="max-height: 80px; border-radius: 5px; border: 1px solid #ddd; padding: 5px; background: white;">
+                                </div>
+                                <input type="file" id="company-logo-file" accept="image/*" style="display: none;">
+                                <button type="button" class="btn" style="width: 100%; margin-bottom: 10px;" onclick="document.getElementById('company-logo-file').click()">Select Logo Image</button>
+                                <input type="hidden" id="company-logo-url">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" id="company-email" placeholder="Contact Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Numbers</label>
+                                <input type="text" id="company-phone" placeholder="Phone Number(s)" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Location / Address</label>
+                                <textarea id="company-location" placeholder="Company Address / Location" required style="resize: vertical; min-height: 80px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn">Update Company Profile</button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Payment QR Codes Section -->

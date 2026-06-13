@@ -1382,3 +1382,90 @@ async function markReviewHelpful(reviewId, voterEmail) {
         return { success: false, message: 'Failed to mark review as helpful' };
     }
 }
+
+// Auto-load Company Profile on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        let client = null;
+        let attempts = 0;
+        // Wait up to 2.5 seconds for Supabase client
+        while (!client && attempts < 25) {
+            client = window.supabaseClient || (typeof getClient === 'function' ? getClient() : null);
+            if (!client) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+            }
+        }
+        
+        if (!client) return;
+
+        // Fetch company profile from admin_settings
+        const { data, error } = await client
+            .from('admin_settings')
+            .select('setting_value')
+            .eq('setting_key', 'company_profile')
+            .single();
+
+        if (error) {
+            console.log('Company profile setting not initialized yet');
+            return;
+        }
+
+        if (data && data.setting_value) {
+            let profile = data.setting_value;
+            if (typeof profile === 'string') {
+                try { profile = JSON.parse(profile); } catch {}
+            }
+            
+            if (profile) {
+                // 1. Update logo images
+                const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img');
+                logoImages.forEach(img => {
+                    if (profile.logo_url) img.src = profile.logo_url;
+                    if (profile.company_name) img.alt = profile.company_name + ' Logo';
+                });
+
+                // 2. Update company name text
+                const logoTexts = document.querySelectorAll('.logo-text h1, .logo-text h2, .footer-section h3, .logo h2');
+                logoTexts.forEach(el => {
+                    // Update main title headers, but skip the admin panel's specific logo text if it's already customized
+                    if (profile.company_name && !el.closest('.logo')) {
+                        el.textContent = profile.company_name;
+                    }
+                });
+
+                // 3. Update contact phone numbers
+                const phoneElements = document.querySelectorAll('#contactPhone, .contact-phone');
+                phoneElements.forEach(el => {
+                    if (profile.phone) el.textContent = profile.phone;
+                });
+
+                // 4. Update contact email addresses
+                const emailElements = document.querySelectorAll('#contactEmail, .contact-email, #contactEmail a');
+                emailElements.forEach(el => {
+                    if (profile.email) {
+                        if (el.tagName === 'A') {
+                            el.textContent = profile.email;
+                            el.href = 'mailto:' + profile.email;
+                        } else {
+                            el.textContent = profile.email;
+                            const link = el.querySelector('a');
+                            if (link) {
+                                link.textContent = profile.email;
+                                link.href = 'mailto:' + profile.email;
+                            }
+                        }
+                    }
+                });
+
+                // 5. Update contact locations / addresses
+                const addressElements = document.querySelectorAll('#contactAddress, .contact-address');
+                addressElements.forEach(el => {
+                    if (profile.location) el.innerHTML = profile.location.replace(/\n/g, '<br>');
+                });
+            }
+        }
+    } catch (err) {
+        console.warn('Error loading dynamic company profile:', err);
+    }
+});
