@@ -187,10 +187,9 @@ body {
 }
 
 .admin-logout {
-    position: absolute;
-    bottom: 30px;
-    width: 100%;
-    padding: 0 25px;
+    padding: 20px 25px 30px 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
 }
 
 /* Mobile Menu Toggle Button */
@@ -911,6 +910,11 @@ tbody tr:hover {
     .admin-nav a span,
     .admin-logout a span {
         display: none;
+    }
+
+    .admin-logout {
+        padding: 15px;
+        margin-top: 10px;
     }
 
     .main-content {
