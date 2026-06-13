@@ -2110,8 +2110,26 @@ async function saveContactInfo(e) {
         
         console.log('📝 Saving contact info:', contactInfo);
         await saveSetting('contact_info', contactInfo);
+
+        // Propagate to company_profile
+        const existingProfile = await getSetting('company_profile') || {};
+        const updatedProfile = {
+            ...existingProfile,
+            email: contactInfo.email,
+            phone: contactInfo.phone,
+            location: contactInfo.address
+        };
+        await saveSetting('company_profile', updatedProfile);
+
+        // Update company profile form fields dynamically if they exist on the page
+        const compEmailEl = document.getElementById('company-email');
+        const compPhoneEl = document.getElementById('company-phone');
+        const compLocEl = document.getElementById('company-location');
+        if (compEmailEl) compEmailEl.value = contactInfo.email;
+        if (compPhoneEl) compPhoneEl.value = contactInfo.phone;
+        if (compLocEl) compLocEl.value = contactInfo.address;
         
-        showNotification('✅ Contact information saved successfully! Your changes are now stored.', 'success');
+        showNotification('✅ Contact information saved and synchronized successfully!', 'success');
         console.log('✅ Contact info verified in database');
         
     } catch (error) {
@@ -2153,8 +2171,20 @@ async function saveAdminSettings(e) {
         
         console.log('📝 Saving admin settings:', adminSettings);
         await saveSetting('admin_settings', adminSettings);
+
+        // Propagate to company_profile
+        const existingProfile = await getSetting('company_profile') || {};
+        const updatedProfile = {
+            ...existingProfile,
+            company_name: adminSettings.businessName
+        };
+        await saveSetting('company_profile', updatedProfile);
+
+        // Update company profile form field dynamically if it exists on the page
+        const compNameEl = document.getElementById('company-name');
+        if (compNameEl) compNameEl.value = adminSettings.businessName;
         
-        showNotification('✅ Settings saved successfully! Your changes are now stored.', 'success');
+        showNotification('✅ General settings saved and synchronized successfully!', 'success');
         console.log('✅ Admin settings verified in database');
         
     } catch (error) {
@@ -2232,8 +2262,34 @@ async function saveCompanyProfile(e) {
         console.log('📝 Saving company profile:', companyProfile);
         submitBtn.textContent = 'Saving settings...';
         await saveSetting('company_profile', companyProfile);
+
+        // Propagate to contact_info
+        const contactInfo = {
+            phone: companyPhone,
+            email: companyEmail,
+            address: companyLocation
+        };
+        await saveSetting('contact_info', contactInfo);
+
+        // Propagate to admin_settings
+        const existingAdmin = await getSetting('admin_settings') || {};
+        const updatedAdmin = {
+            ...existingAdmin,
+            businessName: companyName
+        };
+        await saveSetting('admin_settings', updatedAdmin);
+
+        // Update general settings and contact info fields dynamically if they exist on the page
+        const busNameEl = document.getElementById('business-name');
+        const conPhoneEl = document.getElementById('contact-phone');
+        const conEmailEl = document.getElementById('contact-email');
+        const conAddrEl = document.getElementById('contact-address');
+        if (busNameEl) busNameEl.value = companyName;
+        if (conPhoneEl) conPhoneEl.value = companyPhone;
+        if (conEmailEl) conEmailEl.value = companyEmail;
+        if (conAddrEl) conAddrEl.value = companyLocation;
         
-        showNotification('✅ Company profile saved successfully! Refreshing pages will apply the changes.', 'success');
+        showNotification('✅ Company profile saved and synchronized across all forms!', 'success');
         
     } catch (error) {
         console.error('❌ Error saving company profile:', error);

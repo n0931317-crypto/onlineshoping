@@ -1410,13 +1410,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (settings && settings.length > 0) {
+            // Sort settings by updated_at ascending so that more recently updated settings take precedence
+            settings.sort((a, b) => {
+                const dateA = new Date(a.updated_at || 0);
+                const dateB = new Date(b.updated_at || 0);
+                return dateA - dateB;
+            });
+
             let companyName = '';
             let logoUrl = '';
             let email = '';
             let phone = '';
             let location = '';
 
-            // Extract values checking company_profile first, then falling back to admin_settings / contact_info
             settings.forEach(setting => {
                 let val = setting.setting_value;
                 if (typeof val === 'string') {
@@ -1431,77 +1437,165 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (val.phone) phone = val.phone;
                     if (val.location) location = val.location;
                 } else if (setting.setting_key === 'admin_settings') {
-                    if (val.businessName && !companyName) companyName = val.businessName;
+                    const name = val.businessName || val.business_name;
+                    if (name) companyName = name;
                 } else if (setting.setting_key === 'contact_info') {
-                    if (val.email && !email) email = val.email;
-                    if (val.phone && !phone) phone = val.phone;
-                    if (val.address && !location) location = val.address;
+                    if (val.email) email = val.email;
+                    if (val.phone) phone = val.phone;
+                    if (val.address) location = val.address;
                 }
             });
 
-            // 1. Update company name text elements
-            if (companyName) {
-                // Update browser tab title if it matches standard title
-                if (document.title.includes('Nepo Online') || document.title.includes('nepo online') || document.title.includes('Online stores')) {
-                    document.title = document.title.replace(/Nepo Online\s*stores?/gi, companyName);
-                }
-
-                // Update text headers
-                const logoTexts = document.querySelectorAll('.logo-text h1, .logo-text h2, .footer-section h3, .logo h2');
-                logoTexts.forEach(el => {
-                    el.textContent = companyName;
-                });
-            }
-
-            // 2. Update logo image tags
-            if (logoUrl) {
-                const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img');
-                logoImages.forEach(img => {
-                    img.src = logoUrl;
-                    img.style.display = 'block'; // Make sure the dynamic logo is displayed
-                    if (companyName) img.alt = companyName + ' Logo';
-                });
-
-                // Update page favicon
-                const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
-                if (favicon) {
-                    favicon.href = logoUrl;
-                }
-            }
-
-            // 3. Update contact phone numbers
-            if (phone) {
-                const phoneElements = document.querySelectorAll('#contactPhone, .contact-phone');
-                phoneElements.forEach(el => {
-                    el.textContent = phone;
-                });
-            }
-
-            // 4. Update contact email addresses
-            if (email) {
-                const emailElements = document.querySelectorAll('#contactEmail, .contact-email, #contactEmail a');
-                emailElements.forEach(el => {
-                    if (el.tagName === 'A') {
-                        el.textContent = email;
-                        el.href = 'mailto:' + email;
-                    } else {
-                        el.textContent = email;
-                        const link = el.querySelector('a');
-                        if (link) {
-                            link.textContent = email;
-                            link.href = 'mailto:' + email;
+            // Helper for global regex-based text node replacement
+            function replaceRegexGlobally(regex, newVal) {
+                if (!regex || !newVal) return;
+                const cleanNew = newVal.trim();
+                const walker = document.createTreeWalker(
+                    document.body || document.documentElement,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+                
+                let node;
+                const nodesToReplace = [];
+                while (node = walker.nextNode()) {
+                    const parent = node.parentNode;
+                    if (parent) {
+                        const tagName = parent.tagName.toLowerCase();
+                        if (tagName !== 'script' && tagName !== 'style' && tagName !== 'textarea' && tagName !== 'input') {
+                            if (node.nodeValue.match(regex)) {
+                                nodesToReplace.push({ node, value: node.nodeValue });
+                            }
                         }
                     }
+                }
+                nodesToReplace.forEach(item => {
+                    item.node.nodeValue = item.value.replace(regex, cleanNew);
                 });
             }
 
-            // 5. Update contact locations / addresses
-            if (location) {
-                const addressElements = document.querySelectorAll('#contactAddress, .contact-address');
-                addressElements.forEach(el => {
-                    el.innerHTML = location.replace(/\n/g, '<br>');
-                });
-            }
+            // Expose a global apply function so we can repeat it later
+            window.applyDynamicReplacements = function() {
+                // 1. Update company name globally
+                if (companyName) {
+                    // Update browser tab title
+                    const originalTitle = document.title;
+                    const titleRegex = /Nepo\s+Online(?:\s+Stores?)?/gi;
+                    if (titleRegex.test(originalTitle)) {
+                        document.title = originalTitle.replace(titleRegex, companyName);
+                    }
+
+                    // Update text headers
+                    const logoTexts = document.querySelectorAll('.logo-text h1, .logo-text h2, .footer-section h3, .logo h2, .brand-title, .footer-section h4');
+                    logoTexts.forEach(el => {
+                        if (/Nepo\s+Online(?:\s+Stores?)?/gi.test(el.textContent)) {
+                            el.textContent = companyName;
+                        }
+                    });
+
+                    // Global regex search-and-replace for company name text nodes
+                    const nameRegex = /Nepo\s+Online(?:\s+Stores?)?(?:\s*&\s*Cosmetic\s+Center)?/gi;
+                    replaceRegexGlobally(nameRegex, companyName);
+                }
+
+                // 2. Update logo image tags and favicon
+                if (logoUrl) {
+                    const logoImages = document.querySelectorAll('.logo-image, .nav-logo-image, .logo img, .company-logo-img, img[alt*="Logo"], .about-logo img, .company-logo-img img');
+                    logoImages.forEach(img => {
+                        img.src = logoUrl;
+                        img.style.display = 'block';
+                        if (companyName) img.alt = companyName + ' Logo';
+                    });
+
+                    // Update page favicon
+                    const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+                    if (favicon) {
+                        favicon.href = logoUrl;
+                    }
+                }
+
+                // 3. Update contact phone numbers
+                if (phone) {
+                    const phoneElements = document.querySelectorAll('#contactPhone, .contact-phone');
+                    phoneElements.forEach(el => {
+                        el.textContent = phone;
+                    });
+                    
+                    const phoneRegex = /(?:\+?977[- ]?)?9823145063|(?:\+?91[- ]?)?9823145063|(?:\+?977[- ]?)?982314506|033590207|\+977 \(Coming Soon\)/gi;
+                    replaceRegexGlobally(phoneRegex, phone);
+
+                    // Update tel links
+                    const telLinks = document.querySelectorAll('a[href^="tel:"]');
+                    const cleanPhone = phone.replace(/[^0-9+]/g, '');
+                    telLinks.forEach(link => {
+                        link.href = 'tel:' + cleanPhone;
+                        if (/\d/.test(link.textContent)) {
+                            link.textContent = phone;
+                        }
+                    });
+
+                    // Update WhatsApp links
+                    const digits = phone.replace(/[^0-9]/g, '');
+                    if (digits.length >= 7) {
+                        const waLinks = document.querySelectorAll('a[href*="wa.me"]');
+                        waLinks.forEach(link => {
+                            link.href = `https://wa.me/${digits}`;
+                        });
+                    }
+                }
+
+                // 4. Update contact email addresses
+                if (email) {
+                    const emailElements = document.querySelectorAll('#contactEmail, .contact-email, #contactEmail a');
+                    emailElements.forEach(el => {
+                        if (el.tagName === 'A') {
+                            el.textContent = email;
+                            el.href = 'mailto:' + email;
+                        } else {
+                            const link = el.querySelector('a');
+                            if (link) {
+                                link.textContent = email;
+                                link.href = 'mailto:' + email;
+                            } else {
+                                el.textContent = email;
+                            }
+                        }
+                    });
+
+                    // Replace specific email placeholders globally
+                    const emailRegex = /(?:[a-zA-Z0-9._%+-]+@nepoonline\.[a-zA-Z]{2,}|nepoonline0@gmail\.com)/gi;
+                    replaceRegexGlobally(emailRegex, email);
+
+                    // Update all mailto links dynamically
+                    const mailtoLinks = document.querySelectorAll('a[href^="mailto:"]');
+                    mailtoLinks.forEach(link => {
+                        link.href = 'mailto:' + email;
+                        if (link.textContent.includes('@')) {
+                            link.textContent = email;
+                        }
+                    });
+                }
+
+                // 5. Update contact locations / addresses
+                if (location) {
+                    const addressElements = document.querySelectorAll('#contactAddress, .contact-address');
+                    addressElements.forEach(el => {
+                        el.innerHTML = location.replace(/\n/g, '<br>');
+                    });
+
+                    // Replace specific location placeholders globally
+                    const locationRegex = /Mirchaiya\s+Bazar(?:,\s*Sirha,\s*Nepal)?|Khaireni,\s*Gulmi,\s*Nepal/gi;
+                    replaceRegexGlobally(locationRegex, location);
+                }
+            };
+
+            // Run immediately
+            window.applyDynamicReplacements();
+
+            // Run deferred to catch dynamically-loaded elements (reviews, carousel, etc.)
+            setTimeout(window.applyDynamicReplacements, 500);
+            setTimeout(window.applyDynamicReplacements, 2000);
         }
     } catch (err) {
         console.warn('Error loading dynamic company details:', err);

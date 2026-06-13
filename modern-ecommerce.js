@@ -387,27 +387,54 @@ async function loadAdminSettings() {
         }
 
         if (settings && settings.length > 0) {
-            // Parse settings and update page
+            // Sort settings by updated_at ascending so that more recently updated settings take precedence
+            settings.sort((a, b) => {
+                const dateA = new Date(a.updated_at || 0);
+                const dateB = new Date(b.updated_at || 0);
+                return dateA - dateB;
+            });
+
+            let mergedContactInfo = { phone: '', email: '', address: '' };
+            let mergedAdminInfo = { businessName: '', business_name: '' };
+            let businessHours = { opening: '', closing: '' };
+
             settings.forEach(setting => {
                 let value = setting.setting_value;
                 if (typeof value === 'string') {
-                    try {
-                        value = JSON.parse(value);
-                    } catch (e) {
-                        value = {};
-                    }
-                } else if (value === null || value === undefined) {
-                    value = {};
+                    try { value = JSON.parse(value); } catch (e) { value = {}; }
                 }
-                
-                if (setting.setting_key === 'business_hours') {
-                    updateBusinessHours(value);
+                if (!value) return;
+
+                if (setting.setting_key === 'company_profile') {
+                    if (value.company_name) {
+                        mergedAdminInfo.businessName = value.company_name;
+                        mergedAdminInfo.business_name = value.company_name;
+                    }
+                    if (value.phone) mergedContactInfo.phone = value.phone;
+                    if (value.email) mergedContactInfo.email = value.email;
+                    if (value.location) mergedContactInfo.address = value.location;
                 } else if (setting.setting_key === 'contact_info') {
-                    updateContactInfo(value);
+                    if (value.phone) mergedContactInfo.phone = value.phone;
+                    if (value.email) mergedContactInfo.email = value.email;
+                    if (value.address) mergedContactInfo.address = value.address;
                 } else if (setting.setting_key === 'admin_settings') {
-                    updateAdminInfo(value);
+                    const name = value.businessName || value.business_name;
+                    if (name) {
+                        mergedAdminInfo.businessName = name;
+                        mergedAdminInfo.business_name = name;
+                    }
+                } else if (setting.setting_key === 'business_hours') {
+                    if (value.opening && value.closing) {
+                        businessHours.opening = value.opening;
+                        businessHours.closing = value.closing;
+                    }
                 }
             });
+
+            // Update UI elements with merged values
+            updateBusinessHours(businessHours);
+            updateContactInfo(mergedContactInfo);
+            updateAdminInfo(mergedAdminInfo);
         }
 
         console.log('✅ Admin settings loaded');
