@@ -927,17 +927,17 @@
 
                 <div class="summary-row">
                     <span>Subtotal:</span>
-                    <span id="subtotal">₹0.00</span>
+                    <span id="subtotal">Rs. 0.00</span>
                 </div>
                 
                 <div class="summary-row">
                     <span>Delivery Charge:</span>
-                    <span id="delivery-charge">₹50.00</span>
+                    <span id="delivery-charge">Rs. 50.00</span>
                 </div>
 
                 <div class="summary-row total">
                     <span>Total Amount:</span>
-                    <span id="total-amount">₹0.00</span>
+                    <span id="total-amount">Rs. 0.00</span>
                 </div>
 
                 <div class="loader" id="payment-loader"></div>
@@ -1159,8 +1159,8 @@
             if (!cartItems || cartItems.length === 0) {
                 console.warn('⚠️ Cart is empty');
                 container.innerHTML = '<div style="text-align: center; opacity: 0.8; padding: 20px; color: white;">Your cart is empty. <a href="index.html" style="color: #4facfe; text-decoration: underline;">Continue Shopping</a></div>';
-                if (subtotalEl) subtotalEl.textContent = '₹0.00';
-                if (totalEl) totalEl.textContent = '₹0.00';
+                if (subtotalEl) subtotalEl.textContent = 'Rs. 0.00';
+                if (totalEl) totalEl.textContent = 'Rs. 0.00';
                 return;
             }
 
@@ -1178,7 +1178,7 @@
                             <div class="cart-item-name">${item.name || 'Unknown Product'}</div>
                             <div class="cart-item-qty" style="font-size: 0.9em; opacity: 0.8;">Qty: ${qty}</div>
                         </div>
-                        <div class="cart-item-price">₹${itemTotal.toFixed(2)}</div>
+                        <div class="cart-item-price">Rs. ${itemTotal.toFixed(2)}</div>
                     </div>
                 `;
             }).join('');
@@ -1192,8 +1192,8 @@
             console.log('💰 Cart totals - Subtotal:', subtotal, 'Total:', total);
 
             // Update totals
-            if (subtotalEl) subtotalEl.textContent = '₹' + subtotal.toFixed(2);
-            if (totalEl) totalEl.textContent = '₹' + total.toFixed(2);
+            if (subtotalEl) subtotalEl.textContent = 'Rs. ' + subtotal.toFixed(2);
+            if (totalEl) totalEl.textContent = 'Rs. ' + total.toFixed(2);
 
             // Save total to sessionStorage
             sessionStorage.setItem('totalAmount', total.toString());

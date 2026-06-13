@@ -184,7 +184,7 @@ async function renderCartOverlay() {
                 <div class="cart-overlay-info">
                     <div class="cart-overlay-title">${product.name}</div>
                     <div class="cart-overlay-qty">Qty: ${item.quantity}</div>
-                    <div class="cart-overlay-price">₹${product.price.toFixed(0)}</div>
+                    <div class="cart-overlay-price">Rs. ${product.price.toFixed(0)}</div>
                 </div>
             </div>
         `;
@@ -547,7 +547,7 @@ function setupEventListeners() {
     if (priceMinInput) {
         priceMinInput.addEventListener('input', (e) => {
             priceMin = parseInt(e.target.value);
-            document.getElementById('minDisplay').textContent = '₹' + priceMin.toLocaleString('en-IN');
+            document.getElementById('minDisplay').textContent = 'Rs. ' + priceMin.toLocaleString('en-IN');
             applyFilters();
         });
     }
@@ -555,7 +555,7 @@ function setupEventListeners() {
     if (priceMaxInput) {
         priceMaxInput.addEventListener('input', (e) => {
             priceMax = parseInt(e.target.value);
-            document.getElementById('maxDisplay').textContent = '₹' + priceMax.toLocaleString('en-IN');
+            document.getElementById('maxDisplay').textContent = 'Rs. ' + priceMax.toLocaleString('en-IN');
             applyFilters();
         });
     }
@@ -825,8 +825,8 @@ function resetAllFilters() {
     if (priceMin) priceMin.value = '0';
     if (priceMax) priceMax.value = '10000';
 
-    document.getElementById('minDisplay').textContent = '₹0';
-    document.getElementById('maxDisplay').textContent = '₹10000';
+    document.getElementById('minDisplay').textContent = 'Rs. 0';
+    document.getElementById('maxDisplay').textContent = 'Rs. 10000';
 
     currentCategory = 'all';
     currentSortOrder = '';
@@ -865,7 +865,7 @@ function displayProducts(products) {
                 <h3>${product.name}</h3>
                 <p class="product-description">${product.description.substring(0, 60)}...</p>
                 <div class="product-footer">
-                    <span class="price">₹${product.price.toFixed(0)}</span>
+                    <span class="price">Rs. ${product.price.toFixed(0)}</span>
                     <button class="quick-add order-now-btn" onclick="event.stopPropagation(); orderNowFromCollection('${product.id}')" title="Order Now">
                         <i class="fas fa-check-circle"></i> Order Now
                     </button>
@@ -889,7 +889,7 @@ async function openProductModal(productId) {
         }
 
         document.getElementById('modalProductName').textContent = product.name;
-        document.getElementById('modalProductPrice').textContent = `₹${product.price.toFixed(0)}`;
+        document.getElementById('modalProductPrice').textContent = `Rs. ${product.price.toFixed(0)}`;
         document.getElementById('modalProductDescription').textContent = product.description;
         document.getElementById('quantityInput').value = '1';
 

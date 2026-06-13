@@ -436,7 +436,7 @@
                     <li><a href="index.html#products">Products</a></li>
                     <li><a href="orders.html">Order</a></li>
                     <li><a href="track.html">Track</a></li>
-                    <li><a href="about.html">About</a></li>
+                    <li><a href="about-us.html">About</a></li>
                     <li><a href="admin.html" class="admin-btn">Admin</a></li>
                 </ul>
                 <div class="mobile-menu-btn">
@@ -484,8 +484,8 @@
 
                 <div>
                     <div class="details-price">
-                        <span id="productPrice">₹999</span>
-                        <span class="details-original-price">₹1,299</span>
+                        <span id="productPrice">Rs. 999</span>
+                        <span class="details-original-price">Rs. 1,299</span>
                         <span class="details-discount">23% OFF</span>
                     </div>
                 </div>
@@ -587,7 +587,7 @@
                         <li><a href="index.html">Home</a></li>
                         <li><a href="index.html#products">Products</a></li>
                         <li><a href="shipping.html">Shipping Policy</a></li>
-                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="about-us.html">About Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -638,7 +638,7 @@
             const qty = document.getElementById('quantity').value;
             const productName = document.getElementById('productName').textContent;
             const priceText = document.getElementById('productPrice').textContent;
-            const price = parseFloat(priceText.replace('₹', '').replace(',', ''));
+            const price = parseFloat(priceText.replace('Rs. ', '').replace(',', ''));
             
             // Create proper order data structure
             const orderData = {
@@ -693,8 +693,8 @@
             const demoProduct = {
                 id: productId,
                 name: 'Premium Beauty Serum',
-                price: '₹899',
-                originalPrice: '₹1,299',
+                price: 'Rs. 899',
+                originalPrice: 'Rs. 1,299',
                 description: 'Our premium beauty serum is formulated with natural ingredients to provide deep nourishment and hydration to your skin.',
                 stock: 45,
                 rating: 4.5,

@@ -144,7 +144,7 @@ function displayOrderDetails(order) {
     document.getElementById('detail-order-id').textContent = order.order_number;
     document.getElementById('detail-status').textContent = formatStatus(order.status);
     document.getElementById('detail-status').style.color = getStatusColor(order.status);
-    document.getElementById('detail-amount').textContent = `₹${order.total_amount.toFixed(2)}`;
+    document.getElementById('detail-amount').textContent = `Rs. ${order.total_amount.toFixed(2)}`;
 
     // Update delivery information
     document.getElementById('detail-name').textContent = order.customer_name;
@@ -190,7 +190,7 @@ function displayOrderItems(items) {
                 <div class="item-name">${item.product_name}</div>
                 <div class="item-qty">Quantity: ${item.quantity}</div>
             </div>
-            <div class="item-price">₹${(item.quantity * item.price).toFixed(2)}</div>
+            <div class="item-price">Rs. ${(item.quantity * item.price).toFixed(2)}</div>
         </div>
     `).join('');
 

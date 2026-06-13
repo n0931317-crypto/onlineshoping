@@ -39,12 +39,20 @@ function initializeSupabase() {
     return !!window.supabaseClient;
 }
 
-// Try to initialize Supabase immediately when script loads
-if (window.supabase) {
+// Try to initialize Supabase immediately when script loads, or load it dynamically if missing
+if (!window.supabase) {
+    console.log('⏳ Supabase library not found. Loading dynamically...');
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.async = false;
+    script.onload = () => {
+        console.log('✅ Supabase library loaded dynamically');
+        initializeSupabase();
+    };
+    document.head.appendChild(script);
+} else {
     console.log('⏳ Supabase library detected, initializing...');
     initializeSupabase();
-} else {
-    console.warn('⚠️ Supabase library not yet loaded');
 }
 
 // Also try on DOMContentLoaded as fallback
@@ -759,16 +767,16 @@ async function sendNewOrderEmail(orderData) {
             ${orderData.items.map(item => `
                 <div class="item">
                     <strong>${item.product_name}</strong><br>
-                    Quantity: ${item.quantity} × ₹${item.price} = <strong>₹${(item.price * item.quantity).toFixed(2)}</strong>
+                    Quantity: ${item.quantity} × Rs. ${item.price} = <strong>Rs. ${(item.price * item.quantity).toFixed(2)}</strong>
                 </div>
             `).join('')}
             <div class="item" style="border-bottom: 2px solid #ff6b8b;">
-                <strong>Delivery Charge:</strong> ₹${orderData.delivery_charge.toFixed(2)}
+                <strong>Delivery Charge:</strong> Rs. ${orderData.delivery_charge.toFixed(2)}
             </div>
         </div>
         
         <div class="total">
-            <p>Total Amount: ₹${orderData.total_amount.toFixed(2)}</p>
+            <p>Total Amount: Rs. ${orderData.total_amount.toFixed(2)}</p>
         </div>
         
         <div style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px;">
@@ -859,7 +867,7 @@ async function sendOrderUpdateEmail(orderData, newStatus) {
             <h3>Order Information</h3>
             <p><strong>Order ID:</strong> ${orderData.order_number}</p>
             <p><strong>Status:</strong> ${newStatus.toUpperCase().replace('_', ' ')}</p>
-            <p><strong>Total Amount:</strong> ₹${orderData.total_amount.toFixed(2)}</p>
+            <p><strong>Total Amount:</strong> Rs. ${orderData.total_amount.toFixed(2)}</p>
             <p><strong>Delivery Address:</strong> ${orderData.delivery_address}</p>
         </div>
         
@@ -996,12 +1004,12 @@ async function sendNewOrderEmailToAdmin(orderData) {
             <h4 style="margin-top: 15px;">Items:</h4>
             ${orderData.items.map(item => `
                 <div class="item">
-                    <strong>${item.product_name}</strong> (Qty: ${item.quantity}) - ₹${(item.price * item.quantity).toFixed(2)}
+                    <strong>${item.product_name}</strong> (Qty: ${item.quantity}) - Rs. ${(item.price * item.quantity).toFixed(2)}
                 </div>
             `).join('')}
             
             <div class="total">
-                Total: ₹${orderData.total_amount.toFixed(2)} (Including ₹${orderData.delivery_charge.toFixed(2)} delivery)
+                Total: Rs. ${orderData.total_amount.toFixed(2)} (Including Rs. ${orderData.delivery_charge.toFixed(2)} delivery)
             </div>
         </div>
         

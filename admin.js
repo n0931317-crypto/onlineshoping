@@ -2228,27 +2228,32 @@ async function saveCompanyProfile(e) {
             console.log('Uploading company logo file:', logoFile.name);
             submitBtn.textContent = 'Uploading logo...';
             
-            const fileExt = logoFile.name.split('.').pop();
-            const fileName = `company-logo-${Date.now()}.${fileExt}`;
-            
-            const { data: uploadData, error: uploadError } = await client
-                .storage
-                .from('logo')
-                .upload(`assets/${fileName}`, logoFile);
+            try {
+                const fileExt = logoFile.name.split('.').pop();
+                const fileName = `company-logo-${Date.now()}.${fileExt}`;
                 
-            if (uploadError) {
-                throw new Error('Logo upload failed: ' + uploadError.message);
+                const { data: uploadData, error: uploadError } = await client
+                    .storage
+                    .from('logo')
+                    .upload(`assets/${fileName}`, logoFile);
+                    
+                if (uploadError) {
+                    throw uploadError;
+                }
+                
+                // Get public URL
+                const { data: publicData } = await client
+                    .storage
+                    .from('logo')
+                    .getPublicUrl(`assets/${fileName}`);
+                    
+                companyLogoUrl = publicData.publicUrl;
+                document.getElementById('company-logo-url').value = companyLogoUrl;
+                console.log('Logo uploaded, URL:', companyLogoUrl);
+            } catch (uploadErr) {
+                console.warn('⚠️ Logo upload failed (storage bucket issue):', uploadErr);
+                showNotification('⚠️ Logo file upload failed. (You can paste a direct logo image URL instead.) Saving other changes...', 'warning');
             }
-            
-            // Get public URL
-            const { data: publicData } = await client
-                .storage
-                .from('logo')
-                .getPublicUrl(`assets/${fileName}`);
-                
-            companyLogoUrl = publicData.publicUrl;
-            document.getElementById('company-logo-url').value = companyLogoUrl;
-            console.log('Logo uploaded, URL:', companyLogoUrl);
         }
         
         const companyProfile = {

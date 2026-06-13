@@ -540,15 +540,15 @@
                 <div class="summary-box">
                     <div class="summary-row subtotal">
                         <span class="summary-label">Subtotal:</span>
-                        <span class="summary-value" id="summary-subtotal">₹0.00</span>
+                        <span class="summary-value" id="summary-subtotal">Rs. 0.00</span>
                     </div>
                     <div class="summary-row delivery">
                         <span class="summary-label">Delivery Charge:</span>
-                        <span class="summary-value" id="summary-delivery">₹0.00</span>
+                        <span class="summary-value" id="summary-delivery">Rs. 0.00</span>
                     </div>
                     <div class="summary-row total">
                         <span class="summary-label">Total Amount:</span>
-                        <span class="summary-value" id="summary-total">₹0.00</span>
+                        <span class="summary-value" id="summary-total">Rs. 0.00</span>
                     </div>
                 </div>
             </div>
@@ -681,8 +681,8 @@
                         <td>${index + 1}</td>
                         <td>${item.product_name}</td>
                         <td class="item-qty">${item.quantity}</td>
-                        <td class="item-price">₹${item.price.toFixed(2)}</td>
-                        <td class="item-total">₹${(item.price * item.quantity).toFixed(2)}</td>
+                        <td class="item-price">Rs. ${item.price.toFixed(2)}</td>
+                        <td class="item-total">Rs. ${(item.price * item.quantity).toFixed(2)}</td>
                     </tr>
                 `).join('');
 
@@ -693,9 +693,9 @@
                 const delivery = orderData.delivery_charge || 0;
                 const total = orderData.total_amount || (subtotal + delivery);
 
-                document.getElementById('summary-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
-                document.getElementById('summary-delivery').textContent = `₹${delivery.toFixed(2)}`;
-                document.getElementById('summary-total').textContent = `₹${total.toFixed(2)}`;
+                document.getElementById('summary-subtotal').textContent = `Rs. ${subtotal.toFixed(2)}`;
+                document.getElementById('summary-delivery').textContent = `Rs. ${delivery.toFixed(2)}`;
+                document.getElementById('summary-total').textContent = `Rs. ${total.toFixed(2)}`;
 
                 // Set payment info if available
                 if (orderData.payment_method) {

@@ -507,7 +507,7 @@ function addToCart(e) {
         const productName = e.target.getAttribute('data-name');
         const productPrice = e.target.getAttribute('data-price');
         
-        const price = parseFloat(productPrice.toString().replace('₹', '').replace(',', ''));
+        const price = parseFloat(productPrice.toString().replace('Rs. ', '').replace(',', ''));
         
         // Get existing cart from sessionStorage
         let cartItems = JSON.parse(sessionStorage.getItem('cartItems') || '[]');
@@ -658,7 +658,7 @@ function updateCartOverlayItems() {
                 <div class="cart-item-overlay" style="display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #eee; align-items: center;">
                     <div style="flex: 1;">
                         <div style="font-weight: 600; color: #333;">${item.name}</div>
-                        <div style="font-size: 0.9rem; color: #999;">₹${price.toFixed(2)} × ${qty} = ₹${itemTotal.toFixed(2)}</div>
+                        <div style="font-size: 0.9rem; color: #999;">Rs. ${price.toFixed(2)} × ${qty} = Rs. ${itemTotal.toFixed(2)}</div>
                     </div>
                     <button onclick="deleteFromCartOverlay(${index})" class="delete-btn" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">
                         <i class="fas fa-trash"></i> Delete
@@ -669,7 +669,7 @@ function updateCartOverlayItems() {
 
         itemsDiv.innerHTML = html + `
             <div style="padding: 15px; background: #f8f9ff; text-align: right; font-weight: 600; color: #667eea; font-size: 1.1rem;">
-                Total: ₹${total.toFixed(2)}
+                Total: Rs. ${total.toFixed(2)}
             </div>
         `;
 
@@ -1089,7 +1089,7 @@ function addProductToCart() {
     if (!currentProduct) return;
     
     const quantity = parseInt(document.getElementById('quantity').value);
-    const price = parseFloat(currentProduct.price.toString().replace('₹', '').replace(',', ''));
+    const price = parseFloat(currentProduct.price.toString().replace('Rs. ', '').replace(',', ''));
     
     // Create proper order data structure
     const orderData = {

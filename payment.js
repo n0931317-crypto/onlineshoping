@@ -106,28 +106,28 @@ function displayOrderData() {
         <div class="order-item">
             <div class="order-item-name">${item.product_name}</div>
             <div class="order-item-qty">x${item.quantity}</div>
-            <div class="order-item-price">₹${(item.price * item.quantity).toFixed(2)}</div>
+            <div class="order-item-price">Rs. ${(item.price * item.quantity).toFixed(2)}</div>
         </div>
     `).join('');
 
     document.getElementById('order-items').innerHTML = itemsHtml + `
         <div class="order-item" style="border-bottom: 1px solid #eee;">
             <span>Delivery Charge</span>
-            <span>₹${orderData.delivery_charge.toFixed(2)}</span>
+            <span>Rs. ${orderData.delivery_charge.toFixed(2)}</span>
         </div>
     `;
 
     // Display totals
-    document.getElementById('total-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('total-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
     document.getElementById('summary-order-id').textContent = orderData.order_number;
 
     // Update amount references
-    document.getElementById('esewa-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
-    document.getElementById('khalti-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
-    document.getElementById('bank-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
-    document.getElementById('note-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
-    document.getElementById('khalti-note-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
-    document.getElementById('bank-note-amount').textContent = `₹${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('esewa-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('khalti-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('bank-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('note-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('khalti-note-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
+    document.getElementById('bank-note-amount').textContent = `Rs. ${orderData.total_amount.toFixed(2)}`;
 
     // Set reference numbers
     document.getElementById('esewa-ref').textContent = orderData.order_number;
